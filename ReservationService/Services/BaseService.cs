@@ -1,4 +1,6 @@
 ﻿using ReservationService.Configuration;
+using ReservationService.Core;
+using ReservationService.Model;
 using System.Formats.Asn1;
 
 namespace ReservationService.Services
@@ -26,7 +28,7 @@ namespace ReservationService.Services
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                TEntity entity = unitOfWOrk.GetRepository<TEntity>().Get(id);
+                TEntity entity = unitOfWork.GetRepository<TEntity>().Get(id);
 
                 return entity;
             }
@@ -42,7 +44,7 @@ namespace ReservationService.Services
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                unitOfWOrk.GetRepository<TEntity>().Add(entity);
+                unitOfWork.GetRepository<TEntity>().Add(entity);
                 _ = unitOfWork.Complete();
                 return entity;
             }
@@ -62,9 +64,9 @@ namespace ReservationService.Services
 
                 if (entity == null)
                 {
-                    unitOfWOrk.GetRepository<TEntity>().Add(ent);
+                    unitOfWork.GetRepository<TEntity>().Add(ent);
                 }
-                unitOfWOrk.GetRepository<TEntity>().Update(ent);
+                unitOfWork.GetRepository<TEntity>().Update(ent);
                 _ = unitOfWork.Complete();
 
                 return true;
@@ -81,11 +83,11 @@ namespace ReservationService.Services
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                TEntity entity = unitOfWOrk.GetRepository<TEntity>().Get(id);
+                TEntity entity = unitOfWork.GetRepository<TEntity>().Get(id);
 
                 (entity as Entity).Deleted = true;
 
-                unitOfWOrk.GetRepository<TEntity>().Update(entity);
+                unitOfWork.GetRepository<TEntity>().Update(entity);
                 _ = unitOfWork.Complete();
 
                 return true;

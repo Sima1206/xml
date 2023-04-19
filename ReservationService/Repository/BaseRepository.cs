@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using ReservationService.Core;
 using ReservationService.Model;
 using System.Linq.Expressions;

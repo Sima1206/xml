@@ -1,4 +1,8 @@
-﻿namespace XML.Services
+﻿using XML.Configuration;
+using XML.Core;
+using XML.Model;
+
+namespace XML.Services
 {
     public class BaseService<TEntity> where TEntity : class
     {
@@ -23,7 +27,7 @@
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                TEntity entity = unitOfWOrk.GetRepository<TEntity>().Get(id);
+                TEntity entity = unitOfWork.GetRepository<TEntity>().Get(id);
 
                 return entity;
             }
@@ -39,7 +43,7 @@
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                unitOfWOrk.GetRepository<TEntity>().Add(entity);
+                unitOfWork.GetRepository<TEntity>().Add(entity);
                 _ = unitOfWork.Complete();
                 return entity;
             }
@@ -59,9 +63,9 @@
 
                 if (entity == null)
                 {
-                    unitOfWOrk.GetRepository<TEntity>().Add(ent);
+                    unitOfWork.GetRepository<TEntity>().Add(ent);
                 }
-                unitOfWOrk.GetRepository<TEntity>().Update(ent);
+                unitOfWork.GetRepository<TEntity>().Update(ent);
                 _ = unitOfWork.Complete();
 
                 return true;
@@ -78,11 +82,11 @@
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-                TEntity entity = unitOfWOrk.GetRepository<TEntity>().Get(id);
+                TEntity entity = unitOfWork.GetRepository<TEntity>().Get(id);
 
                 (entity as Entity).Deleted = true;
 
-                unitOfWOrk.GetRepository<TEntity>().Update(entity);
+                unitOfWork.GetRepository<TEntity>().Update(entity);
                 _ = unitOfWork.Complete();
 
                 return true;

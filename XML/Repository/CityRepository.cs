@@ -4,7 +4,7 @@ using XML.Model;
 
 namespace XML.Repository
 {
-    public class CityRepository : BaseRepository<City>
+    public class CityRepository : BaseRepository<City>, ICityRepository
     {
         public CityRepository(DbContext context) : base(context)
         {
