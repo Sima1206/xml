@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using XML.Core;
 using XML.Model;
 
 namespace XML.Repository

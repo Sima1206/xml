@@ -2,6 +2,7 @@
 using UserService.Configuration;
 using UserService.Services;
 using UserService.Model;
+using UserService.Core;
 
 namespace UserService.Controllers
 {

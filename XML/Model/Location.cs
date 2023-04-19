@@ -1,4 +1,6 @@
-﻿namespace XML.Model
+﻿using XML.Repository;
+
+namespace XML.Model
 {
     public class Location : Entity
     {

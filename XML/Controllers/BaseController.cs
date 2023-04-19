@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XML.Configuration;
 using XML.Services;
 
 namespace XML.Controllers

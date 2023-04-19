@@ -1,8 +1,13 @@
-﻿using XML.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using XML.Core;
+using XML.Model;
 
 namespace XML.Repository
 {
-    public class AddressRepository : IAddressRepository
+    public class AddressRepository : BaseRepository<Address>
     {
+        public AddressRepository(DbContext context) : base(context)
+        {
+        }
     }
 }

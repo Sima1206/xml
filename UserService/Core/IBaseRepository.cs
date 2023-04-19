@@ -9,7 +9,6 @@ namespace UserService.Core
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
         IEnumerable<TEntity> GetAll();
-        IEnumerable<TEntity> GetPage(PageModel model);
         TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);

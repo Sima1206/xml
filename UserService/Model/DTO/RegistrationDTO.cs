@@ -1,12 +1,11 @@
-﻿namespace UserService.Model
+﻿namespace UserService.Model.DTO
 {
-    public class User : Entity
+    public class RegistrationDTO
     {
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public long CityId { get; set; }
-        public bool Enabled { get; set; }
     }
 }

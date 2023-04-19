@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using UserService.Core;
 using UserService.Model;
 
 namespace UserService.Repository
@@ -63,10 +65,5 @@ namespace UserService.Repository
         {
             throw new NotImplementedException();
         }
-        public virtual PageResponse<TEntity> GetPage(PageModel model)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
