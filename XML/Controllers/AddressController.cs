@@ -5,6 +5,8 @@ namespace XML.Controllers
 {
     public class AddressController : BaseController<Address>
     {
-        
+        public AddressController(ProjectConfiguration configuration) : base(configuration)
+        {
+        }
     }
 }

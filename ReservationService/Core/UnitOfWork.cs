@@ -16,7 +16,7 @@ namespace ReservationService.Core
             Reservations = new ReservationRepository(_context);
         }
 
-        public IAccommodationRepository Accomodations { get; private set; }
+        public IAccommodationRepository Accommodations { get; private set; }
         public IReservationRepository Reservations { get; private set; }
 
         public IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : class

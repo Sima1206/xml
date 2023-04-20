@@ -1,6 +1,8 @@
-﻿namespace XML.Model
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace XML.Model
 {
-    public class ApplicationContext
+    public class ApplicationContext : DbContext
     {
     }
 }

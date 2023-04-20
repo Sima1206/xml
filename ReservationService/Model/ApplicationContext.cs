@@ -1,6 +1,8 @@
-﻿namespace ReservationService.Model
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ReservationService.Model
 {
-    public class ApplicationContext
+    public class ApplicationContext : DbContext
     {
 
     }

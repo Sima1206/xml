@@ -65,10 +65,6 @@ namespace XML.Repository
         {
             throw new NotImplementedException();
         }
-        public virtual PageResponse<TEntity> GetPage(PageModel model)
-        {
-            throw new NotImplementedException();
-        }
 
     }
 }

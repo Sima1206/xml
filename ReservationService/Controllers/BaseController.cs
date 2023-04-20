@@ -7,13 +7,11 @@ namespace ReservationService.Controllers
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
         protected ProjectConfiguration _configuration;
-        protected IUserService _userService;
         protected BaseService<TEntity> _baseService;
 
-        public BaseController(ProjectConfiguration configuration, IUserService userService)
+        public BaseController(ProjectConfiguration configuration)
         {
             _configuration = configuration;
-            _userService = userService;
             _baseService = new BaseService<TEntity>(configuration);
         }
 
@@ -62,13 +60,6 @@ namespace ReservationService.Controllers
             bool response = _baseService.Delete(id);
 
             return Ok(response);
-        }
-
-        protected User GetCurrentUser()
-        {
-            string email = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Email")?.Value;
-
-            return _userService.GetUserWithEmail(email);
         }
     }
 }
