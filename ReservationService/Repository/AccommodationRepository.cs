@@ -9,5 +9,8 @@ namespace ReservationService.Repository
         public AccommodationRepository(DbContext context) : base(context)
         {
         }
+
+
+
     }
 }
