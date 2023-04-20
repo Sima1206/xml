@@ -35,6 +35,21 @@ namespace ReservationService.Services
             }
         }
 
+        public IEnumerable<Accommodation> SearchByGuestsNum(int guestsNum)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new UnitOfWork(new ApplicationContext());
+
+                return unitOfWork.Accommodations.SearchByGuestsNum(guestsNum);
+            }
+            catch (Exception e)
+            {
+                return new List<Accommodation>();
+            }
+        }
+
+
 
 
 

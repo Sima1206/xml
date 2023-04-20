@@ -28,5 +28,24 @@ namespace ReservationService.Controllers
 
             return Ok(newAccommodation);
         }
+
+
+        [Route("searchAccomodationByGuests")]
+        [HttpGet("guestsNum/{guestsNum}")]
+        public IActionResult SearchByGuestsNum(int guestsNum)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            IEnumerable<Accommodation> searchedAccommodations = accommodationService.SearchByGuestsNum(guestsNum);
+
+            return Ok(searchedAccommodations);
+        }
+
+
+
+
+
+
+
     }
 }

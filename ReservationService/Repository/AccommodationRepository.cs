@@ -10,6 +10,11 @@ namespace ReservationService.Repository
         {
         }
 
+        public IEnumerable<Accommodation> SearchByGuestsNum(int guestsNum)
+        {
+            return ApplicationContext.Accommodations.Where(x => guestsNum > x.MinGuests && guestsNum < x.MaxGuests).ToList();
+        }
+
 
 
     }
