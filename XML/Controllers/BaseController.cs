@@ -4,6 +4,8 @@ using XML.Services;
 
 namespace XML.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
         protected ProjectConfiguration _configuration;

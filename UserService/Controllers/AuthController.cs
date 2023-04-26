@@ -28,10 +28,6 @@ namespace UserService.Controllers
         [HttpPost]
         public IActionResult Login(LoginDTO login)
         {
-            if (login.ClientID != _configuration.ClientID || login.ClientSecret != _configuration.ClientSecret)
-            {
-                return BadRequest("ClientID or ClientSecret was not correct, please check again");
-            }
 
             if (login == null || login.Email == null || login.Password == null) 
             { 

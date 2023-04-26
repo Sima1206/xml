@@ -29,10 +29,11 @@ namespace UserService.Services
 
                 user.Name = dto.Name;
                 user.Surname = dto.Surname;
-                user.Password = dto.Password;
+                user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
                 user.Email = dto.Email;
                 user.CityId = dto.CityId;
                 user.Enabled = true;
+                user.userType = UserType.User;
 
                 unitOfWork.Users.Add(user);
                 unitOfWork.Complete();

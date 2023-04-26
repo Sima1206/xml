@@ -49,7 +49,33 @@ namespace ReservationService.Services
             }
         }
 
+        public IEnumerable<Accommodation> SearchByLocation(long location)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new UnitOfWork(new ApplicationContext());
 
+                return unitOfWork.Accommodations.SearchByLocation(location);
+            }
+            catch (Exception e)
+            {
+                return new List<Accommodation>();
+            }
+        }
+
+        public IEnumerable<Reservation> SearchByDate(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new UnitOfWork(new ApplicationContext());
+
+                return unitOfWork.Reservations.SearchByDate(startDate, endDate);
+            }
+            catch (Exception e)
+            {
+                return new List<Reservation>();
+            }
+        }
 
 
 

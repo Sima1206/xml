@@ -28,9 +28,9 @@
     }
     public class Jwt
     {
-        public string Key { get; set; }
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
-        public string Subject { get; set; }
+        public string Key { get; set; } = "bladfghghadfljgdfhlgjfdlghafjghLJGHALJGHAGJHADFLGHDAFJLF";
+        public string Issuer { get; set; } = "LJKGDSKJLFSDKJfsldsfmkfdsnfdsfnkdsfsdmddgdgafasadasgdsg";
+        public string Audience { get; set; } = "kfsagfjkghkgnfgbdffdgrjioukukgjghdrgdgfdjyjygsadavdsvug";
+        public string Subject { get; set; } = "oirteoriterjgrejoiredfksofdksofseifskmfsgfhfghadseeuyefes";
     }
 }

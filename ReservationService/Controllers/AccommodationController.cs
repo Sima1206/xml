@@ -7,6 +7,8 @@ using ReservationService.Services;
 
 namespace ReservationService.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AccommodationController : BaseController<Accommodation>
     {
         public AccommodationController(ProjectConfiguration configuration) : base(configuration)
@@ -41,6 +43,27 @@ namespace ReservationService.Controllers
             return Ok(searchedAccommodations);
         }
 
+        [Route("searchAccomodationByLocation")]
+        [HttpGet("location/{location}")]
+        public IActionResult SearchByGuestsNum(long location)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            IEnumerable<Accommodation> searchedAccommodations = accommodationService.SearchByLocation(location);
+
+            return Ok(searchedAccommodations);
+        }
+
+        [Route("searchAccomodationByDate")]
+        [HttpGet("date/{startDate/endDate}")]
+        public IActionResult SearchByDate(DateTime startDate, DateTime endDate)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            IEnumerable<Reservation> searchedAccommodations = accommodationService.SearchByDate(startDate, endDate);
+
+            return Ok(searchedAccommodations);
+        }
 
 
 
