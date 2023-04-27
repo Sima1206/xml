@@ -32,8 +32,7 @@ namespace ReservationService.Controllers
         }
 
 
-        [Route("searchAccomodationByGuests")]
-        [HttpGet("guestsNum/{guestsNum}")]
+        [HttpGet("searchAccomodationByGuests/guestsNum/{guestsNum}")]
         public IActionResult SearchByGuestsNum(int guestsNum)
         {
             AccommodationService accommodationService = new AccommodationService();
@@ -43,8 +42,7 @@ namespace ReservationService.Controllers
             return Ok(searchedAccommodations);
         }
 
-        [Route("searchAccomodationByLocation")]
-        [HttpGet("location/{location}")]
+        [HttpGet("searchAccomodationByLocation/location/{location}")]
         public IActionResult SearchByGuestsNum(long location)
         {
             AccommodationService accommodationService = new AccommodationService();
@@ -54,8 +52,7 @@ namespace ReservationService.Controllers
             return Ok(searchedAccommodations);
         }
 
-        [Route("searchAccomodationByDate")]
-        [HttpGet("date/{startDate/endDate}")]
+        [HttpGet("searchAccomodationByDate/date/{startDate}/{endDate}")]
         public IActionResult SearchByDate(DateTime startDate, DateTime endDate)
         {
             AccommodationService accommodationService = new AccommodationService();

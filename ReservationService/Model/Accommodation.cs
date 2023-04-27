@@ -12,6 +12,8 @@ namespace ReservationService.Model
         public bool Kitchen { get; set; }
         public int MinGuests { get; set; }
         public int MaxGuests { get; set; }
+        public double Price { get; set; }
+        
 
     }
 }

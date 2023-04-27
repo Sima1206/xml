@@ -22,6 +22,7 @@ namespace ReservationService.Services
                 accommodation.FreeParking = dto.FreeParking;
                 accommodation.MinGuests = dto.MinGuests;
                 accommodation.MaxGuests = dto.MaxGuests;
+                accommodation.Price = dto.Price;
                 
 
                 unitOfWork.Accommodations.Add(accommodation);

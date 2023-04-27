@@ -1,4 +1,5 @@
-﻿using UserService.Core;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using UserService.Core;
 using UserService.Model;
 using UserService.Model.DTO;
 
@@ -45,5 +46,38 @@ namespace UserService.Services
                 return null;
             }
         }
+
+        public User UpdateProfile(UserDTO dto)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+                User user = new User();
+
+                user.Name = dto.Name;
+                user.Surname = dto.Surname;
+                user.Email = dto.Email;
+                user.Password = dto.Password;
+                user.CityId = dto.CityId;
+                user.Enabled = true;
+                user.userType = dto.userType;
+
+
+                unitOfWork.Users.Update(user);
+                unitOfWork.Complete();
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+
+
+
     }
 }

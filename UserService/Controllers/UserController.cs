@@ -21,6 +21,8 @@ namespace UserService.Controllers
         {
             return Ok(GetCurrentUser());
         }
+
+
         [Route("register")]
         [HttpPost]
         public IActionResult Register(RegistrationDTO dto)
@@ -38,5 +40,21 @@ namespace UserService.Controllers
             User registeredUser = _userService.Register(dto);
             return Ok(registeredUser);
         }
+
+        [Route("updateProfile")]
+        [HttpPost]
+        public IActionResult UpdateProfile(UserDTO dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest();
+            }
+
+            User updatedUser = _userService.UpdateProfile(dto);
+
+            return Ok(updatedUser);
+        }
+
+
     }
 }
