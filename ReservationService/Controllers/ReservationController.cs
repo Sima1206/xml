@@ -31,10 +31,82 @@ namespace ReservationService.Controllers
         }
 
 
+        [Route("guestCancel")]
+        [HttpPost]
+        public bool CancelReservationByGuest([FromBody] Reservation reservation)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            return  reservationService.CancelReservationByGuest(reservation);
+        }
+
+        [Route("autoAccept")]
+        [HttpPost]
+        public IActionResult autoAccept([FromBody] Reservation reservation)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
+            reservationService.AutoAcceptReservation(reservation);
+            return Ok(reservation);
+        }
+
+        [Route("accept")]
+        [HttpPost]
+        public IActionResult accept([FromBody] Reservation reservation)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
+            reservationService.AcceptReservation(reservation);
+            return Ok(reservation);
+        }
+
+//delete vec imas
 
 
-
-
+        [Route("all")]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            var reservations = reservationService.GetAll();
+            return Ok(reservations);
+        }
         
+        [HttpGet("reservation{id}")]
+        public async Task<ActionResult<Reservation>> Get(long id)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            var reservation =    reservationService.GetById(id);
+
+            if (reservation is null)
+            {
+                return NotFound();
+            }
+
+            return reservation;
+        }
+        [HttpGet("host{id}")]
+        public IActionResult GetByHostId(long id)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            var reservations =    reservationService.GetByHostId(id);
+
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reservations);
+        }
+        [HttpGet("accommodation{id}")]
+        public IActionResult GetByAccommodation(long id)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            var reservations =    reservationService.GetByAccommodation(id);
+
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reservations);
+        }
     }
 }
