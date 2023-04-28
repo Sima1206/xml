@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReservationService.Core;
 using ReservationService.Model;
 
@@ -9,13 +10,11 @@ namespace ReservationService.Repository
         public ReservationRepository(DbContext context) : base(context)
         {
         }
+
         public IEnumerable<Reservation> SearchByDate(DateTime startData, DateTime endDate)
         {
             return ApplicationContext.Reservations.Where(x => startData > x.StartDate && endDate < x.EndDate).ToList();
         }
-
-
-
 
     }
 }

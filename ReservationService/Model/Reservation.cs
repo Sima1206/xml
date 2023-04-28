@@ -2,7 +2,7 @@
 {
     public class Reservation : Entity
     {
-        public Accommodation Accommodation { get; set; }
+        public long AccommodationId   { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int NumGuests { get; set; }
@@ -14,13 +14,13 @@
         {
         }
 
-        public Reservation(long id, bool deleted, Accommodation accommodation,
+        public Reservation(long id, bool deleted, long accommodation,
             DateTime startDate, DateTime endDate, int numGuests, bool accepted, double totalPrice, long guestId)
         {
             id = Id;
             deleted = Deleted;
             accepted = Accepted;
-            accommodation = Accommodation;
+            accommodation = AccommodationId;
             startDate = StartDate;
             endDate = EndDate;
             numGuests = NumGuests;

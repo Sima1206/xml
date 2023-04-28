@@ -107,20 +107,7 @@ namespace ReservationService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccommodationId");
-
                     b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("ReservationService.Model.Reservation", b =>
-                {
-                    b.HasOne("ReservationService.Model.Accommodation", "Accommodation")
-                        .WithMany()
-                        .HasForeignKey("AccommodationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Accommodation");
                 });
 #pragma warning restore 612, 618
         }

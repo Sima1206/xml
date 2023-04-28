@@ -18,18 +18,13 @@ namespace ReservationService.Services
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
 
                 Reservation reservation = new Reservation();
-
-                Accommodation acc = unitOfWork.Accommodations.Get(dto.AccommodationId);
-
-                reservation.Accommodation = acc;
+                reservation.AccommodationId = dto.AccommodationId;
                 reservation.StartDate = dto.StartDate;
                 reservation.EndDate = dto.EndDate;
-                
                 reservation.GuestId = dto.GuestId;
                 reservation.NumGuests = dto.NumGuests;
                 reservation.Accepted = reservation.Accepted;
-                reservation.TotalPrice = TotalPrice(acc, dto);
-
+                reservation.TotalPrice = TotalPrice(dto);
                 unitOfWork.Reservations.Add(reservation);
                 unitOfWork.Complete();
 
@@ -41,29 +36,23 @@ namespace ReservationService.Services
             }
         }
 
-        private double TotalPrice(Accommodation acc, ReservationDTO reservation)
+        private double TotalPrice(ReservationDTO reservation)
         {
-            var price = acc.Price * (reservation.EndDate - reservation.StartDate).TotalDays;
-
+            
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
+            var price = accommodation.Price * (reservation.EndDate - reservation.StartDate).TotalDays;
             return price;
         }
-
-        public void AcceptReservation(Reservation reservation)
-        {
-            using UnitOfWork unitOfWork = new(new ApplicationContext());
-
-            reservation.Accepted = true;
-            unitOfWork.Reservations.Update(reservation);
-            DeleteReservationsWithMatchingPeriod(reservation);
-        }
-
+        
+        
         public void AutoAcceptReservation(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             reservation.Accepted = true;
             unitOfWork.Reservations.Update(reservation);
         }
-        private void DeleteReservationsWithMatchingPeriod(Reservation reservation)
+        public void DeleteReservationsWithMatchingPeriod(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var allReservations = unitOfWork.Reservations.GetAll();
@@ -113,7 +102,7 @@ namespace ReservationService.Services
 
         private bool MatchedAccommodation(Reservation matchingReservation, Reservation reservation)
         {
-            return matchingReservation.Accommodation == reservation.Accommodation;
+            return matchingReservation.AccommodationId == reservation.AccommodationId;
         }
 
 
@@ -151,14 +140,14 @@ namespace ReservationService.Services
             List<Reservation> filteredByHost = new List<Reservation>();
             foreach (Reservation reservation in unitOfWork.Reservations.GetAll())
             {
-                if (reservation.Accommodation.HostId == id)
+                var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
+                if (accommodation.HostId == id)
                 {
                     filteredByHost.Add(reservation);
                 }
             }
 
             return filteredByHost;
-            
         }
 
         public List<Reservation> GetByAccommodation(long id)
@@ -167,7 +156,8 @@ namespace ReservationService.Services
             List<Reservation> filteredByAccommodationId = new List<Reservation>();
             foreach (Reservation reservation in unitOfWork.Reservations.GetAll())
             {
-                if (reservation.Accommodation.Id == id)
+                var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
+                if (accommodation.HostId == id)
                 {
                     filteredByAccommodationId.Add(reservation);
                 }

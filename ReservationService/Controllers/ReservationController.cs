@@ -10,6 +10,7 @@ namespace ReservationService.Controllers
     [Route("api/[controller]")]
     public class ReservationController : BaseController<Reservation>
     {
+       // private Services.ReservationService _reservationService;
         public ReservationController(ProjectConfiguration configuration) : base(configuration)
         {
         }
@@ -29,10 +30,23 @@ namespace ReservationService.Controllers
 
             return Ok(newReservation);
         }
-
+/*
+        [HttpPut("accept{id}")]
+        public IActionResult Update([FromRoute]int id, [FromBody]Reservation entity)
+        {
+            if (entity == null)
+            {
+                return BadRequest();
+            }
+            
+            bool response = _baseService.Update((int)id, entity);
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            reservationService.DeleteReservationsWithMatchingPeriod(entity);
+            return Ok(response);
+        } */
 
         [Route("guestCancel")]
-        [HttpPost]
+        [HttpDelete]
         public bool CancelReservationByGuest([FromBody] Reservation reservation)
         {
             ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
@@ -40,7 +54,7 @@ namespace ReservationService.Controllers
         }
 
         [Route("autoAccept")]
-        [HttpPost]
+        [HttpPut]
         public IActionResult autoAccept([FromBody] Reservation reservation)
         {
             ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
@@ -49,11 +63,11 @@ namespace ReservationService.Controllers
         }
 
         [Route("accept")]
-        [HttpPost]
+        [HttpPut]
         public IActionResult accept([FromBody] Reservation reservation)
         {
             ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
-            reservationService.AcceptReservation(reservation);
+        //    reservationService.AcceptReservation(reservation);
             return Ok(reservation);
         }
 

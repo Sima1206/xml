@@ -12,8 +12,8 @@ using ReservationService.Model;
 namespace ReservationService.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230426060629_Init")]
-    partial class Init
+    [Migration("20230428110650_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,11 +32,17 @@ namespace ReservationService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<bool>("AutoAcceptReservations")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("FreeParking")
                         .HasColumnType("bit");
+
+                    b.Property<long>("HostId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Kitchen")
                         .HasColumnType("bit");
@@ -58,6 +64,9 @@ namespace ReservationService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.Property<bool>("Wifi")
                         .HasColumnType("bit");
 
@@ -74,6 +83,9 @@ namespace ReservationService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("bit");
+
                     b.Property<long>("AccommodationId")
                         .HasColumnType("bigint");
 
@@ -83,28 +95,21 @@ namespace ReservationService.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("GuestId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("NumGuests")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AccommodationId");
-
                     b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("ReservationService.Model.Reservation", b =>
-                {
-                    b.HasOne("ReservationService.Model.Accommodation", "Accommodation")
-                        .WithMany()
-                        .HasForeignKey("AccommodationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Accommodation");
                 });
 #pragma warning restore 612, 618
         }
