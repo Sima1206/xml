@@ -47,27 +47,16 @@ namespace UserService.Services
             }
         }
 
-        public User UpdateProfile(UserDTO dto)
+        public User UpdateProfile(User dto)
         {
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
 
-                User user = new User();
-
-                user.Name = dto.Name;
-                user.Surname = dto.Surname;
-                user.Email = dto.Email;
-                user.Password = dto.Password;
-                user.CityId = dto.CityId;
-                user.Enabled = true;
-                user.userType = dto.userType;
-
-
-                unitOfWork.Users.Update(user);
+                unitOfWork.Users.Update(dto);
                 unitOfWork.Complete();
 
-                return user;
+                return dto;
             }
             catch (Exception e)
             {

@@ -7,6 +7,6 @@ namespace UserService.Core
     {
         User GetUserWithEmail(string email);
         User Register(RegistrationDTO dto);
-        User UpdateProfile(UserDTO dto);
+        User UpdateProfile(User dto);
     }
 }

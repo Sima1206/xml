@@ -42,8 +42,8 @@ namespace UserService.Controllers
         }
 
         [Route("updateProfile")]
-        [HttpPost]
-        public IActionResult UpdateProfile(UserDTO dto)
+        [HttpPut]
+        public IActionResult UpdateProfile(User dto)
         {
             if (dto == null)
             {
