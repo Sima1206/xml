@@ -20,7 +20,7 @@ namespace UserService.Model
                 return;
             }
 
-            builder.UseSqlServer("Data Source=DESKTOP-EMK44V7;Initial Catalog=User;Integrated Security=true;");
+            builder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=User;Integrated Security=true;");
         }
     }
 }

@@ -4,7 +4,7 @@
 
 namespace UserService.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,7 @@ namespace UserService.Migrations
                     CityId = table.Column<long>(type: "bigint", nullable: false),
                     Enabled = table.Column<bool>(type: "bit", nullable: false),
                     userType = table.Column<int>(type: "int", nullable: false),
+                    cancelCount = table.Column<int>(type: "int", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
