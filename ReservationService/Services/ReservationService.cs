@@ -17,7 +17,7 @@ namespace ReservationService.Services
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
 
-                Reservation reservation = new Reservation();
+                var reservation = new Reservation();
                 reservation.AccommodationId = dto.AccommodationId;
                 reservation.StartDate = dto.StartDate;
                 reservation.EndDate = dto.EndDate;
@@ -50,21 +50,23 @@ namespace ReservationService.Services
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             reservation.Accepted = true;
-            unitOfWork.Reservations.Update(reservation);
+            UpdateReservation(reservation);
         }
+        
         public void DeleteReservationsWithMatchingPeriod(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var allReservations = unitOfWork.Reservations.GetAll();
-            foreach (var matchingReservation in allReservations)
+            var allMatchedReservation = allReservations.Where(f => f.Id != reservation.Id);
+            foreach (var matchingReservation in allMatchedReservation)
             {
                 if (MatchedAccommodation(matchingReservation, reservation) &&
-                    MatchedPeriod(matchingReservation, reservation))
+                    MatchedPeriods(matchingReservation, reservation))
                 {
 
                     matchingReservation.Accepted = false;
                     matchingReservation.Deleted = true;
-                    unitOfWork.Reservations.Update(matchingReservation);
+                    UpdateReservation(matchingReservation);
                 }
             }
         }
@@ -84,19 +86,15 @@ namespace ReservationService.Services
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-
-            if (reservation.Accepted == true && CanItBeCancled(reservation))
-            {
-                unitOfWork.Reservations.Remove(reservation);
-                return true;
-            }
+            if (!reservation.Accepted || !CanItBeCancled(reservation)) return false;
+            unitOfWork.Reservations.Remove(reservation);
+            return true;
             //servis za usere nek poveca count otkazivanja
-            return false;
         }
 
         private bool CanItBeCancled(Reservation reservation)
         {
-            TimeSpan dif = DateTime.Now - reservation.StartDate.Date;
+            var dif = DateTime.Now - reservation.StartDate.Date;
             return dif.TotalDays < 2;
         }
 
@@ -104,66 +102,113 @@ namespace ReservationService.Services
         {
             return matchingReservation.AccommodationId == reservation.AccommodationId;
         }
-
-
-        private  bool MatchedPeriod(Reservation matchedReservation, Reservation reservation)
-        {
-            TimeRange timeRange1 = new TimeRange(matchedReservation.StartDate.Date, matchedReservation.StartDate.Date);
-            TimeRange timeRange2 = new TimeRange(reservation.StartDate.Date, reservation.StartDate.Date);
-          
-            if(timeRange1.IsSamePeriod(timeRange2) &&
-            timeRange1.HasInside(timeRange2) &&
-            timeRange1.IntersectsWith(timeRange2) &&
-            timeRange1.OverlapsWith(timeRange2))
-            {
-                return true;
-            }
-
-            return false;
-        }
-        
         //na frontu Povuci sve smestaje i pozovi sve rezervacije i filtriraj za svaki smestak datume kad  je slobodan
-        public IEnumerable<Reservation> GetAll()
+        public object? GetAll()
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             return unitOfWork.Reservations.GetAll();
         }
-        public Reservation GetById(long id)
+        public object? GetAllPending()
+        {
+            //nisu obrisane a nisu ni prihvacene
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.Accepted == false && reservation.Deleted==false).ToList();;;
+        }
+        
+        public object? GetAllAccepted()
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.Accepted).ToList();
+        }
+        public ActionResult<Reservation> GetById(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             return unitOfWork.Reservations.Get(id);
         }
 
+        public Reservation UpdateReservation(Reservation dto)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+                unitOfWork.Reservations.Update(dto);
+                unitOfWork.Complete();
+
+                return dto;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        public void AcceptReservation(Reservation reservation)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            reservation.Accepted = true;
+            UpdateReservation(reservation);
+            DeleteReservationsWithMatchingPeriod(reservation);
+        }
+
         public List<Reservation> GetByHostId(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            List<Reservation> filteredByHost = new List<Reservation>();
-            foreach (Reservation reservation in unitOfWork.Reservations.GetAll())
-            {
-                var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
-                if (accommodation.HostId == id)
-                {
-                    filteredByHost.Add(reservation);
-                }
-            }
 
-            return filteredByHost;
+            return (from reservation in unitOfWork.Reservations.GetAll()
+                let accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId)
+                where accommodation.HostId == id select reservation).ToList();
         }
 
         public List<Reservation> GetByAccommodation(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            List<Reservation> filteredByAccommodationId = new List<Reservation>();
-            foreach (Reservation reservation in unitOfWork.Reservations.GetAll())
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.AccommodationId == id).ToList();
+        }
+
+        public object? GetWithMatchingPeriods(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var allReservations = unitOfWork.Reservations.GetAll();
+            var reservation = unitOfWork.Reservations.Get(id);
+            List<Reservation> matchedReservations = new List<Reservation>();
+            foreach (var matchingReservation in allReservations)
             {
-                var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
-                if (accommodation.HostId == id)
+                if (MatchedAccommodation(matchingReservation, reservation) &&
+                    MatchedPeriods(matchingReservation, reservation))
                 {
-                    filteredByAccommodationId.Add(reservation);
+                    matchedReservations.Add(matchingReservation);
                 }
             }
+            return matchedReservations;
+        }
 
-            return filteredByAccommodationId;
+        private bool MatchedPeriods(Reservation matchingReservation, Reservation reservation)
+        {
+            //poklapaju se ili spada unutar 
+            if (matchingReservation.StartDate >= reservation.StartDate &&
+                matchingReservation.EndDate <= reservation.EndDate)
+            {
+                return true;
+            }
+            //poklapaju se ili preklapa ceo period
+            if (reservation.StartDate >= matchingReservation.StartDate &&
+                reservation.EndDate <= matchingReservation.EndDate)
+            {
+                return true;
+            }
+            //pocinje ranije ali se preklapa
+            if (matchingReservation.StartDate <= reservation.StartDate &&
+                reservation.StartDate <= matchingReservation.EndDate)
+            {
+                return true;
+            }
+            //pocinje kasnije ali se preklapa
+            if (matchingReservation.StartDate >= reservation.StartDate &&
+                reservation.StartDate <= matchingReservation.EndDate)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -34,8 +34,8 @@ namespace UserService.Services
                 user.Email = dto.Email;
                 user.CityId = dto.CityId;
                 user.Enabled = true;
-                user.userType = UserType.User;
-
+                user.userType = dto.userType;
+                user.cancelCount = 0;
                 unitOfWork.Users.Add(user);
                 unitOfWork.Complete();
 
@@ -52,7 +52,6 @@ namespace UserService.Services
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-
                 unitOfWork.Users.Update(dto);
                 unitOfWork.Complete();
 

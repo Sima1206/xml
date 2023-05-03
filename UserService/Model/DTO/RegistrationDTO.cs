@@ -7,5 +7,6 @@
         public string Email { get; set; }
         public string Password { get; set; }
         public long CityId { get; set; }
+        public UserType userType { get; set; }
     }
 }

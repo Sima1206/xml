@@ -15,6 +15,6 @@ namespace ReservationService.Repository
         {
             return ApplicationContext.Reservations.Where(x => startData > x.StartDate && endDate < x.EndDate).ToList();
         }
-
+     
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ReservationService.Configuration;
+using ReservationService.Core;
 using ReservationService.Model;
 using ReservationService.Model.DTO;
 using ReservationService.Services;
@@ -8,57 +9,44 @@ namespace ReservationService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReservationController : BaseController<Reservation>
+    public class ReservationController : Controller
     {
-       // private Services.ReservationService _reservationService;
-        public ReservationController(ProjectConfiguration configuration) : base(configuration)
+        private IReservationService _reservationService;
+        private readonly ProjectConfiguration _configuration;
+
+        public ReservationController(ProjectConfiguration configuration, IReservationService reservationService)
         {
+            
+            _configuration = configuration;
+            _reservationService = reservationService;
         }
 
         [Route("createReservation")]
         [HttpPost]
         public IActionResult CreateReservation(ReservationDTO dto)
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
-
             if (dto == null)
             {
                 return BadRequest();
             }
 
-            Reservation newReservation = reservationService.CreateReservation(dto);
+            Reservation newReservation = _reservationService.CreateReservation(dto);
 
             return Ok(newReservation);
         }
-/*
-        [HttpPut("accept{id}")]
-        public IActionResult Update([FromRoute]int id, [FromBody]Reservation entity)
-        {
-            if (entity == null)
-            {
-                return BadRequest();
-            }
-            
-            bool response = _baseService.Update((int)id, entity);
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
-            reservationService.DeleteReservationsWithMatchingPeriod(entity);
-            return Ok(response);
-        } */
-
+        
         [Route("guestCancel")]
         [HttpDelete]
         public bool CancelReservationByGuest([FromBody] Reservation reservation)
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
-            return  reservationService.CancelReservationByGuest(reservation);
+            return  _reservationService.CancelReservationByGuest(reservation);
         }
 
         [Route("autoAccept")]
         [HttpPut]
         public IActionResult autoAccept([FromBody] Reservation reservation)
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
-            reservationService.AutoAcceptReservation(reservation);
+            _reservationService.AutoAcceptReservation(reservation);
             return Ok(reservation);
         }
 
@@ -66,35 +54,23 @@ namespace ReservationService.Controllers
         [HttpPut]
         public IActionResult accept([FromBody] Reservation reservation)
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService(); 
-        //    reservationService.AcceptReservation(reservation);
+            _reservationService.AcceptReservation(reservation);
             return Ok(reservation);
         }
-
-//delete vec imas
-
 
         [Route("all")]
         [HttpGet]
         public IActionResult GetAll()
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
-            var reservations = reservationService.GetAll();
+            var reservations = _reservationService.GetAll();
             return Ok(reservations);
         }
         
         [HttpGet("reservation{id}")]
         public async Task<ActionResult<Reservation>> Get(long id)
         {
-            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
-            var reservation =    reservationService.GetById(id);
-
-            if (reservation is null)
-            {
-                return NotFound();
-            }
-
-            return reservation;
+            var reservation =    _reservationService.GetById(id);
+            return reservation ?? NotFound();
         }
         [HttpGet("host{id}")]
         public IActionResult GetByHostId(long id)
@@ -122,5 +98,41 @@ namespace ReservationService.Controllers
 
             return Ok(reservations);
         }
-    }
+        
+  /*      [HttpGet("matching{id}")]
+        public IActionResult GetWithMatchingPeriods(long id)
+        {
+           var reservations =    _reservationService.GetWithMatchingPeriods(id);
+
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reservations);
+        }
+        [Route("updateReservation")]
+        [HttpPut]
+        public IActionResult UpdateReservation(Reservation dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest();
+            }
+
+            Reservation updatedReservation  =   _reservationService.UpdateReservation(dto);
+
+            return Ok(updatedReservation);
+        }
+
+        [HttpDelete("delete{id}")]
+        public virtual IActionResult Delete(int id)
+        {
+            var response = _reservationService.Delete(id);
+            return Ok(response);
+        } */
+    } 
+    
+  
+    
 }
