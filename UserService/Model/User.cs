@@ -9,5 +9,6 @@
         public long CityId { get; set; }
         public bool Enabled { get; set; }
         public UserType userType { get; set; }
+        public int? cancelCount  { get; set; }
     }
 }

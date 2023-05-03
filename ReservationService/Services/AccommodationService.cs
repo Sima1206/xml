@@ -13,7 +13,7 @@ namespace ReservationService.Services
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
 
                 Accommodation accommodation = new Accommodation();
-
+                accommodation.HostId = dto.HostId;
                 accommodation.Name = dto.Name;
                 accommodation.LocationId = dto.LocationId;
                 accommodation.Pictures = dto.Pictures;
@@ -23,7 +23,7 @@ namespace ReservationService.Services
                 accommodation.MinGuests = dto.MinGuests;
                 accommodation.MaxGuests = dto.MaxGuests;
                 accommodation.Price = dto.Price;
-                
+                accommodation.AutoAcceptReservations = dto.AutoAcceptReservations;
 
                 unitOfWork.Accommodations.Add(accommodation);
                 unitOfWork.Complete();
@@ -77,8 +77,7 @@ namespace ReservationService.Services
                 return new List<Reservation>();
             }
         }
-
-
+        
 
     }
 }

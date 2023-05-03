@@ -30,11 +30,17 @@ namespace ReservationService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<bool>("AutoAcceptReservations")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("FreeParking")
                         .HasColumnType("bit");
+
+                    b.Property<long>("HostId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Kitchen")
                         .HasColumnType("bit");
@@ -87,6 +93,9 @@ namespace ReservationService.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("GuestId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("NumGuests")
                         .HasColumnType("int");
 
@@ -98,20 +107,7 @@ namespace ReservationService.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccommodationId");
-
                     b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("ReservationService.Model.Reservation", b =>
-                {
-                    b.HasOne("ReservationService.Model.Accommodation", "Accommodation")
-                        .WithMany()
-                        .HasForeignKey("AccommodationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Accommodation");
                 });
 #pragma warning restore 612, 618
         }
