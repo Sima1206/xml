@@ -85,6 +85,20 @@ namespace ReservationService.Controllers
 
             return Ok(reservations);
         }
+        
+        [HttpGet("guestt{id}")]
+        public IActionResult GetByGuest(long id)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+            var reservations =    reservationService.GetByGuest(id);
+
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+            return Ok(reservations);
+        }
+        
         [HttpGet("accommodation{id}")]
         public IActionResult GetByAccommodation(long id)
         {

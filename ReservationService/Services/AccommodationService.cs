@@ -77,6 +77,20 @@ namespace ReservationService.Services
                 return new List<Reservation>();
             }
         }
+        public bool DeleteAccommodationsByHostId(long hostId)
+        {
+            using UnitOfWork unitOfWork = new UnitOfWork(new ApplicationContext());
+            var accommodations = unitOfWork.Accommodations.GetAll().Where(a => a.HostId == hostId).ToList();
+            foreach (var accommodation in accommodations)
+            {
+                accommodation.Deleted = true;
+                //update
+            }
+            unitOfWork.Complete();
+            
+            return true;
+        }
+        
         
 
     }

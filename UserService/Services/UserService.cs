@@ -63,9 +63,59 @@ namespace UserService.Services
             }
         }
 
+        public bool DeleteGuestAccount(long guestId)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var user = unitOfWork.Users.Get(guestId);
+            if (user == null || user.Deleted || user.userType != UserType.Guest)
+            {
+                return false;
+            }
+            if (GuestHasReservations(guestId))
+            {
+                return false;
+            }
+            user.Deleted = true;
+            UpdateProfile(user);
+            unitOfWork.Complete();
+            return true;
+        }
+        
+        public bool DeleteHostAccount(long hostId)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var user = unitOfWork.Users.Get(hostId);
+            if (user == null || user.Deleted || user.userType != UserType.Host)
+            {
+                return false;
+            }
+            if (HostHasActiveReservations(hostId))
+            {
+                return false;
+            }
+            //accomodationService.DeleteAccommodationsByHostId(hostId);
+            user.Deleted = true;
+            UpdateProfile(user);
+            unitOfWork.Complete();
+            return true;
+            
 
+            return true;
+        }
 
-
-
+        private bool GuestHasReservations(long guestId)
+        {
+            // var reservations = _reservationService.GetByGuestId(guestId);
+            //return reservations.Any();
+            return false;
+        }
+        private bool HostHasActiveReservations(long hostId)
+        {
+            // var reservations = _reservationService.GetByHostId(hostId).Where(reservation => reservation.Accepted == true);
+            // var today = DateTime.Today;
+            // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
+            return false;
+        }
+        
     }
 }

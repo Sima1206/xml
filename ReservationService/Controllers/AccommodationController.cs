@@ -61,6 +61,20 @@ namespace ReservationService.Controllers
 
             return Ok(searchedAccommodations);
         }
+        
+        [Route("deleteAccommodationsByHostId{id}")]
+        [HttpPut]
+        public IActionResult DeleteAccommodationsByHostId(long id)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+            var deleted = accommodationService.DeleteAccommodationsByHostId(id);
+            if (deleted == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+            
+        }
 
 
 

@@ -16,7 +16,7 @@ namespace ReservationService.Core
         object? GetAllAccepted();
         ActionResult<Reservation> GetById(long id);
         Reservation UpdateReservation(Reservation dto);
-      //  bool Delete(int id);
+        //  bool Delete(int id);
         void AcceptReservation(Reservation reservation);
         object? GetWithMatchingPeriods(long id);
     }
