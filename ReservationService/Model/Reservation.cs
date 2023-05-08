@@ -8,6 +8,6 @@
         public int NumGuests { get; set; }
         public bool Accepted { get; set; }
         public double TotalPrice { get; set; }
-
+        
     }
 }

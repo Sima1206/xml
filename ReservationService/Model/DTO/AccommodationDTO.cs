@@ -11,6 +11,7 @@
         public int MinGuests { get; set; }
         public int MaxGuests { get; set; }
         public double Price { get; set; }
+        public bool PriceForPerson { get; set; }
 
     }
 }

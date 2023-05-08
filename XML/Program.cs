@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
-    optionBuilder.UseSqlServer("Data Source=DESKTOP-EMK44V7;Initial Catalog=XML;Integrated Security=true;");
+    optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=XML;Integrated Security=true;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 

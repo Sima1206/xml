@@ -4,6 +4,7 @@ using UserService.Core;
 using UserService.Model;
 using UserService.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
-    optionBuilder.UseSqlServer("Data Source=DESKTOP-EMK44V7;Initial Catalog=User;Integrated Security=true;");
+    optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO7;Initial Catalog=User;Integrated Security=true;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 

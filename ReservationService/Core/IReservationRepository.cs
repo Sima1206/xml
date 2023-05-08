@@ -5,5 +5,9 @@ namespace ReservationService.Core
     public interface IReservationRepository : IBaseRepository<Reservation>
     {
         IEnumerable<Reservation> SearchByDate(DateTime startDate, DateTime endDate);
+
+        List<Reservation> GetAllReservations();
+
+        void UpdateReservation(Reservation reservation);
     }
 }

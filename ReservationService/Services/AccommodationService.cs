@@ -23,6 +23,7 @@ namespace ReservationService.Services
                 accommodation.MinGuests = dto.MinGuests;
                 accommodation.MaxGuests = dto.MaxGuests;
                 accommodation.Price = dto.Price;
+                accommodation.PriceForPerson = dto.PriceForPerson;
                 
 
                 unitOfWork.Accommodations.Add(accommodation);
