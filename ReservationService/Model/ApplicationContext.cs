@@ -10,6 +10,7 @@ namespace ReservationService.Model
         public ApplicationContext() { }
 
         public DbSet<Accommodation> Accommodations { get; set; }
+        public DbSet<Term> Terms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)

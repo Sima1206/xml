@@ -14,37 +14,18 @@ namespace ReservationService.Services
 
                 Reservation reservation = new Reservation();
 
-                Accommodation acc = unitOfWork.Accommodations.Get(dto.AccommodationId);
+                Term term = unitOfWork.Terms.Get(dto.TermId);
+                Accommodation acc = unitOfWork.Terms.GetTermById(dto.TermId).Accommodation;
+                //Accommodation acc = unitOfWork.Accommodations.Get(dto.AccommodationId);
 
-                reservation.Accommodation = acc;
+                reservation.Term = term;
+                //reservation.Term.Accommodation = acc;
                 reservation.StartDate = dto.StartDate;
                 reservation.EndDate = dto.EndDate;
                 reservation.NumGuests = dto.NumGuests;
                 reservation.Accepted = false;
-                
-                
-              // var numOfDays = (dto.EndDate - dto.StartDate).TotalDays;
 
-               /*     if (numOfDays <= 0)
-                   {
-                       return null;
-                   }
-   
-                   var allReservations = unitOfWork.Reservations.GetAllReservations();
-                   if (allReservations.Count > 0)
-                   {
-                      var dateIncludes = allReservations
-                           .Any(d => d.Accommodation.Id  == dto.AccommodationId && ((dto.StartDate >= d.StartDate && 
-                               dto.StartDate < d.EndDate) || (dto.EndDate >= d.StartDate && dto.EndDate < d.EndDate))); 
-   
-                    
-                       if (dateIncludes)
-                       {
-                           return null;
-                       }
-                   }   */
-
-               if (!checkDates(dto.StartDate, dto.EndDate, dto.AccommodationId))
+                if (!checkDates(dto.StartDate, dto.EndDate, acc.Id))
                    return null;
                    
                
@@ -71,15 +52,17 @@ namespace ReservationService.Services
             }
         }
 
-        public Reservation UpdateReservation(long id, Reservation reservation, long accommodationId)
+        public Reservation UpdateReservation(long id, Reservation reservation, long termId)
         {
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+                Term term = unitOfWork.Terms.GetTermById(termId);
                 
                 reservation.Id = id;
                 
-                if (!checkDates(reservation.StartDate, reservation.EndDate, accommodationId))
+                if (!checkDates(reservation.StartDate, reservation.EndDate, term.Accommodation.Id))
                   return null;
                 
                 unitOfWork.Reservations.UpdateReservation(reservation);
@@ -93,7 +76,6 @@ namespace ReservationService.Services
             return reservation;
         }
 
-
         private bool checkDates(DateTime StartDate, DateTime EndDate, long AccommodationId)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
@@ -103,11 +85,24 @@ namespace ReservationService.Services
                 return false;
             }
 
+            var allTerms = unitOfWork.Terms.GetAllTerms();
+            if (allTerms.Count > 0)
+            {
+                var dateIncludes = allTerms
+                    .Any(d => d.Accommodation.Id == AccommodationId && 
+                              ((StartDate >= d.StartDate && StartDate < d.EndDate) || (EndDate >= d.StartDate 
+                                   && EndDate < d.EndDate) || (d.StartDate >= StartDate  && d.StartDate < EndDate) ||
+                               (d.EndDate >= StartDate && d.EndDate < EndDate)));
+
+                if (!dateIncludes)
+                    return false;
+            }
+            
             var allReservations = unitOfWork.Reservations.GetAllReservations();
             if (allReservations.Count > 0)
             {
                 var dateIncludes = allReservations
-                    .Any(d => d.Accommodation.Id == AccommodationId && 
+                    .Any(d => d.Term.Accommodation.Id == AccommodationId && 
                               ((StartDate >= d.StartDate && StartDate < d.EndDate) || (EndDate >= d.StartDate 
                                   && EndDate < d.EndDate) || (d.StartDate >= StartDate  && d.StartDate < EndDate) ||
                                (d.EndDate >= StartDate && d.EndDate < EndDate)));

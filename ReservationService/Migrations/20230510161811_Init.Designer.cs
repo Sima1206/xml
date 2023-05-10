@@ -12,7 +12,7 @@ using ReservationService.Model;
 namespace ReservationService.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230426060629_Init")]
+    [Migration("20230510161811_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,12 @@ namespace ReservationService.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("PriceForPerson")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Wifi")
                         .HasColumnType("bit");
 
@@ -74,8 +80,8 @@ namespace ReservationService.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<long>("AccommodationId")
-                        .HasColumnType("bigint");
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -89,14 +95,61 @@ namespace ReservationService.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("TermId")
+                        .HasColumnType("bigint");
+
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AccommodationId");
+                    b.HasIndex("TermId");
 
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("ReservationService.Model.Term", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long>("AccommodationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<double>("AdditionPrice")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccommodationId");
+
+                    b.ToTable("Terms");
+                });
+
             modelBuilder.Entity("ReservationService.Model.Reservation", b =>
+                {
+                    b.HasOne("ReservationService.Model.Term", "Term")
+                        .WithMany()
+                        .HasForeignKey("TermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Term");
+                });
+
+            modelBuilder.Entity("ReservationService.Model.Term", b =>
                 {
                     b.HasOne("ReservationService.Model.Accommodation", "Accommodation")
                         .WithMany()

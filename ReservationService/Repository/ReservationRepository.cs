@@ -17,7 +17,7 @@ namespace ReservationService.Repository
 
         public List<Reservation> GetAllReservations() //Izvlaci sve rezervacije i include-uje accomodation u rezervaciji koji je deo nje
         {                                              //kupi objekat od stranog kljuca
-            return ApplicationContext.Reservations.Include(r => r.Accommodation).AsNoTracking().ToList();
+            return ApplicationContext.Reservations.Include(r => r.Term.Accommodation).AsNoTracking().ToList();
         }
 
         public void UpdateReservation(Reservation reservation)

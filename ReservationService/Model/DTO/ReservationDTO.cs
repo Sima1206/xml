@@ -2,7 +2,8 @@
 {
     public class ReservationDTO
     {
-        public long AccommodationId { get; set; }
+        //public long AccommodationId { get; set; }
+        public  long TermId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int NumGuests { get; set; }

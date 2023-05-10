@@ -24,6 +24,7 @@ builder.Services.AddSingleton(projectConfiguration);
 
 builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 builder.Services.AddScoped<IReservationService, ReservationService.Services.ReservationService>();
+builder.Services.AddScoped<ITermService, TermService.Services.TermService>();
 
 var app = builder.Build();
 

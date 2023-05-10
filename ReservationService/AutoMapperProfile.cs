@@ -11,5 +11,7 @@ public class AutoMapperProfile : Profile
         CreateMap<ReservationDTO, Reservation>(); //maper iz dto u rezervaciju
         
         CreateMap<AccommodationDTO, Accommodation>();
+
+        CreateMap<TermDTO, Term>();
     }
 }

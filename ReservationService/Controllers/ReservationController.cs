@@ -49,7 +49,7 @@ namespace ReservationService.Controllers
                 return BadRequest(new { message = "Wrong reservation, please check your fields"});
 
             Reservation reservation =
-                reservationService.UpdateReservation(id, _mapper.Map<Reservation>(reservationDto), reservationDto.AccommodationId);
+                reservationService.UpdateReservation(id, _mapper.Map<Reservation>(reservationDto), reservationDto.TermId);
             
             if(reservation == null)
                 return BadRequest(new { message = "Wrong reservation, please check your fields"});
