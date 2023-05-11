@@ -55,7 +55,7 @@ namespace UserService.Controllers
             return Ok(updatedUser);
         }
         
-        [Route("deleteGuestAccount{id}")]
+        [Route("deleteGuestAccount/{id}")]
         [HttpPut]
         public IActionResult DeleteGuestAccount(long id)
         {
@@ -68,7 +68,7 @@ namespace UserService.Controllers
             
         }
         
-        [Route("deleteHostAccount{id}")]
+        [Route("deleteHostAccount/{id}")]
         [HttpPut]
         public IActionResult DeleteHostAccount(long id)
         {

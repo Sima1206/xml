@@ -1,7 +1,19 @@
 version: '3.7'
 
 services:
+  gateway:
+    image: gateway
+    build:
+      context: .
+      dockerfile: ./Gateway/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+        - local_network
   userservice:
+    container_name: userservice
     image: userservice
     build:
       context: .
@@ -10,8 +22,11 @@ services:
       - "8000:80"
     depends_on:
       - db
+    networks:
+        - local_network
 
   reservationservice:
+    container_name: reservationservice
     image: reservationservice
     build:
       context: .
@@ -20,17 +35,21 @@ services:
       - "8001:80"
     depends_on:
       - db
+    networks:
+        - local_network
   db:
+    container_name: mssql
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
-      SA_PASSWORD: Your_password123
+      SA_PASSWORD: Your_password123!
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
     volumes:
-      - db-data:/var/opt/mssql/data
-      - db-log:/var/opt/mssql/log
-
-volumes:
-  db-data:
-  db-log:
+      - ./mssql/data:/var/opt/mssql/data
+      - ./backups:/var/backups
+    networks:
+        - local_network
+networks:
+  local_network:
+    driver: bridge

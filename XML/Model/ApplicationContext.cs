@@ -20,7 +20,7 @@ namespace XML.Model
                 return;
             }
 
-            builder.UseSqlServer("Data Source=DESKTOP-EMK44V7;Initial Catalog=XML;Integrated Security=true;");
+            builder.UseSqlServer("Server=mssql;Database=XML;User Id=sa;Password=Your_password123!;");
         }
 
 

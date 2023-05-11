@@ -1,0 +1,68 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/user/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/users/register",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/updateProfile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/users/updateProfile",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/deleteGuestAccount/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/users/deleteGuestAccount/{id}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/deleteHostAccount/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/users/deleteHostAccount/{id}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/accommodation/createAccomodation",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/accommodations/createAccomodation",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:8080"
+  }
+}
