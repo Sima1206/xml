@@ -47,6 +47,16 @@ public class TermController : BaseController<Term>
     [HttpPut]
     public IActionResult UpdateTerm(long id, TermDTO dto)
     {
-        return Ok();
+        TermService.Services.TermService termService = new TermService.Services.TermService();
+
+        if (dto == null)
+            return BadRequest(new { message = "Wrong term, please check your fields"});
+
+        Term term = termService.UpdateTerm(id, _mapper.Map<Term>(dto), dto.AccommodationId);
+        
+        if(term == null)
+            return BadRequest(new { message = "Wrong term, please check your fields or exist reservation in this term"});
+
+        return Ok(new {message = "Updated term successfully"});
     }
 }

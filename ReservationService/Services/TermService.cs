@@ -21,7 +21,7 @@ public class TermService : ITermService
             term.EndDate = dto.EndDate;
             term.AdditionPrice = dto.AdditionPrice;
 
-            if (!checkDates(dto.StartDate, dto.EndDate, dto.AccommodationId))
+            if (!checkDates(dto.StartDate, dto.EndDate, dto.AccommodationId, term.Id))
                 return null;
 
             unitOfWork.Terms.Add(term);
@@ -34,8 +34,33 @@ public class TermService : ITermService
             return null;
         }
     }
+
+    public Term UpdateTerm(long id, Term term, long accommodationId)
+    {
+        try
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            List<Reservation> reservations = unitOfWork.Reservations.GetAllReservations()
+                .Where(r => r.Term.Id == id).ToList();
+            if (reservations.Count > 0)
+                return null;
+            term.Id = id;
+            
+            if (!checkDates(term.StartDate, term.EndDate, accommodationId, term.Id))
+                return null;
+            
+            unitOfWork.Terms.UpdateTerm(term);
+
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+
+        return term;
+    }
     
-    private bool checkDates(DateTime StartDate, DateTime EndDate, long AccommodationId)
+    private bool checkDates(DateTime StartDate, DateTime EndDate, long AccommodationId, long TermId)
     {
         using UnitOfWork unitOfWork = new(new ApplicationContext());
             
@@ -44,7 +69,7 @@ public class TermService : ITermService
             return false;
         }
 
-        var allTerms = unitOfWork.Terms.GetAllTerms();
+        var allTerms = unitOfWork.Terms.GetAllTerms().Where(t => t.Id != TermId).ToList();
         if (allTerms.Count > 0)
         {
             var dateIncludes = allTerms

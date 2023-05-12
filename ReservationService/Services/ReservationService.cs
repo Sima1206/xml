@@ -25,7 +25,7 @@ namespace ReservationService.Services
                 reservation.NumGuests = dto.NumGuests;
                 reservation.Accepted = false;
 
-                if (!checkDates(dto.StartDate, dto.EndDate, acc.Id))
+                if (!checkDates(dto.StartDate, dto.EndDate, acc.Id, reservation.Id, term.Id))
                    return null;
                    
                
@@ -62,7 +62,7 @@ namespace ReservationService.Services
                 
                 reservation.Id = id;
                 
-                if (!checkDates(reservation.StartDate, reservation.EndDate, term.Accommodation.Id))
+                if (!checkDates(reservation.StartDate, reservation.EndDate, term.Accommodation.Id, reservation.Id, term.Id))
                   return null;
                 
                 unitOfWork.Reservations.UpdateReservation(reservation);
@@ -76,7 +76,7 @@ namespace ReservationService.Services
             return reservation;
         }
 
-        private bool checkDates(DateTime StartDate, DateTime EndDate, long AccommodationId)
+        private bool checkDates(DateTime StartDate, DateTime EndDate, long AccommodationId, long ReservationId, long TermId)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             
@@ -85,6 +85,19 @@ namespace ReservationService.Services
                 return false;
             }
 
+            var allTerms1 = unitOfWork.Terms.GetAllTerms();
+            if (allTerms1.Count > 0)
+            {
+                var dateIncludes = allTerms1
+                    .Any(d => d.Id == TermId && 
+                              ((StartDate >= d.StartDate && StartDate < d.EndDate) || (EndDate >= d.StartDate 
+                                   && EndDate < d.EndDate) || (d.StartDate >= StartDate  && d.StartDate < EndDate) ||
+                               (d.EndDate >= StartDate && d.EndDate < EndDate)));
+
+                if (!dateIncludes)
+                    return false;
+            }
+            
             var allTerms = unitOfWork.Terms.GetAllTerms();
             if (allTerms.Count > 0)
             {
@@ -98,7 +111,8 @@ namespace ReservationService.Services
                     return false;
             }
             
-            var allReservations = unitOfWork.Reservations.GetAllReservations();
+            var allReservations = unitOfWork.Reservations.GetAllReservations()
+                .Where(r => r.Id != ReservationId).ToList();
             if (allReservations.Count > 0)
             {
                 var dateIncludes = allReservations

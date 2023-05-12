@@ -17,11 +17,13 @@ public class TermRepository : BaseRepository<Term>, ITermRepository
 
     public void UpdateTerm(Term term)
     {
-        throw new NotImplementedException();
+        ApplicationContext.Entry(term).State = EntityState.Modified; 
+        ApplicationContext.SaveChanges();
     }
     
     public Term GetTermById(long id)
     {
         return ApplicationContext.Terms.Where(t => t.Id == id).Include(t => t.Accommodation).AsNoTracking().FirstOrDefault();
     }
+    
 }
