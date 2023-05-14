@@ -228,24 +228,6 @@ namespace ReservationService.Services
             IEnumerable<DateTime> nonAvailableDates = NonAvailableDates(allAcceptedForAccommodation);
             return nonAvailableDates;
         }
-
-        /*
-        public bool IsAccommodationAvailable(DateTime reservationStartDate, DateTime reservationEndDate, long accommodationId)
-        {
-            List<Reservation> allAcceptedForAccommodation = AllAcceptedForAccommodation(accommodationId);
-            IEnumerable<DateTime> nonAvailableDates = NonAvailableDates(allAcceptedForAccommodation);
-            var reservationDates = new List<DateTime>();
-            var dateTime = reservationStartDate;
-            while (dateTime != reservationEndDate)
-            {
-                reservationDates.Add(dateTime);
-                dateTime.AddDays(1);
-            }
-            var firstNotSecond = nonAvailableDates.Except(reservationDates).ToList();
-            var secondNotFirst = reservationDates.Except(nonAvailableDates).ToList();
-            return !firstNotSecond.Any() && !secondNotFirst.Any();
-        } */
-    
         private List<Reservation> AllAcceptedForAccommodation(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
