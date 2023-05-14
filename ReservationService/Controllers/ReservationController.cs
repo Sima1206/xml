@@ -3,7 +3,6 @@ using ReservationService.Configuration;
 using ReservationService.Core;
 using ReservationService.Model;
 using ReservationService.Model.DTO;
-using ReservationService.Services;
 
 namespace ReservationService.Controllers
 {
@@ -11,7 +10,7 @@ namespace ReservationService.Controllers
     [Route("api/[controller]")]
     public class ReservationController : Controller
     {
-        private IReservationService _reservationService;
+        private readonly IReservationService _reservationService;
         private readonly ProjectConfiguration _configuration;
 
         public ReservationController(ProjectConfiguration configuration, IReservationService reservationService)
@@ -23,15 +22,13 @@ namespace ReservationService.Controllers
 
         [Route("createReservation")]
         [HttpPost]
-        public IActionResult CreateReservation(ReservationDTO dto)
+        public IActionResult CreateReservation(ReservationDTO? dto)
         {
             if (dto == null)
             {
                 return BadRequest();
             }
-
-            Reservation newReservation = _reservationService.CreateReservation(dto);
-
+            var newReservation = _reservationService.CreateReservation(dto);
             return Ok(newReservation);
         }
 
@@ -42,17 +39,9 @@ namespace ReservationService.Controllers
             return _reservationService.CancelReservationByGuest(reservation);
         }
 
-        [Route("autoAccept")]
-        [HttpPut]
-        public IActionResult autoAccept([FromBody] Reservation reservation)
-        {
-            _reservationService.AutoAcceptReservation(reservation);
-            return Ok(reservation);
-        }
-
         [Route("accept")]
         [HttpPut]
-        public IActionResult accept([FromBody] Reservation reservation)
+        public IActionResult Accept([FromBody] Reservation reservation)
         {
             _reservationService.AcceptReservation(reservation);
             return Ok(reservation);
@@ -66,26 +55,22 @@ namespace ReservationService.Controllers
             return Ok(reservations);
         }
 
-        [HttpGet("reservation{id}")]
-        public async Task<ActionResult<Reservation>> Get(long id)
+        [HttpGet("reservation{id:long}")]
+        public Task<ActionResult<Reservation>> Get(long id)
         {
             var reservation = _reservationService.GetById(id);
-            return reservation ?? NotFound();
+            return Task.FromResult(reservation);
         }
 
-        [HttpGet("host{id}")]
+        [HttpGet("host{id:long}")]
         public IActionResult GetByHostId(long id)
         {
-            ReservationService.Services.ReservationService reservationService =
-                new ReservationService.Services.ReservationService();
-            var reservations = reservationService.GetByHostId(id);
-
-            if (reservations is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(reservations);
+           var reservations = _reservationService.GetByHostId(id);
+           if (reservations is null)
+           {
+               return NotFound();
+           }
+           return Ok(reservations);
         }
 
         [HttpGet("guest{id}")]
@@ -105,15 +90,7 @@ namespace ReservationService.Controllers
         [HttpGet("accommodation{id}")]
         public IActionResult GetByAccommodation(long id)
         {
-            ReservationService.Services.ReservationService reservationService =
-                new ReservationService.Services.ReservationService();
-            var reservations = reservationService.GetByAccommodation(id);
-
-            if (reservations is null)
-            {
-                return NotFound();
-            }
-
+            var reservations = _reservationService.GetByAccommodation(id);
             return Ok(reservations);
         }
 
@@ -129,6 +106,13 @@ namespace ReservationService.Controllers
             }
 
             return Ok(dates);
+        }
+        
+        [HttpGet("totalPrice")]
+        public IActionResult TotalPrice(Reservation dto)
+        {
+            var price = _reservationService.TotalPrice(dto);
+            return Ok(price);
         }
     }
 

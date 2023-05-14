@@ -99,6 +99,9 @@ namespace ReservationService.Migrations
                     b.Property<int>("NumGuests")
                         .HasColumnType("int");
 
+                    b.Property<bool>("PriceForOneGuest")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 

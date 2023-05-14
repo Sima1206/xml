@@ -14,19 +14,5 @@
         {
         }
 
-        public Reservation(long id, bool deleted, long accommodation,
-            DateTime startDate, DateTime endDate, int numGuests, bool accepted, double totalPrice, long guestId)
-        {
-            id = Id;
-            deleted = Deleted;
-            accepted = Accepted;
-            accommodation = AccommodationId;
-            startDate = StartDate;
-            endDate = EndDate;
-            numGuests = NumGuests;
-            totalPrice = TotalPrice;
-            guestId = GuestId;
-        }
-
     }
 }

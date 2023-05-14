@@ -14,6 +14,8 @@ namespace ReservationService.Model
         public int MinGuests { get; set; }
         public int MaxGuests { get; set; }
         public double Price { get; set; }
+        
+        public bool PriceForOneGuest { get; set; }
         public bool AutoAcceptReservations  { get; set; }
         
 
