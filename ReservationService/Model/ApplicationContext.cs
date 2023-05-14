@@ -10,6 +10,7 @@ namespace ReservationService.Model
         public ApplicationContext() { }
 
         public DbSet<Accommodation> Accommodations { get; set; }
+        public DbSet<Term> Terms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
@@ -18,7 +19,6 @@ namespace ReservationService.Model
             {
                 return;
             }
-
             builder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!;");
         }
     }

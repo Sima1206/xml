@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ReservationService.Configuration;
 using ReservationService.Core;
 using ReservationService.Model;
@@ -16,10 +17,15 @@ namespace ReservationService.Controllers
 
         public ReservationController(ProjectConfiguration configuration, IReservationService reservationService)
         {
+          _configuration = configuration;
+           _reservationService = reservationService;
 
-            _configuration = configuration;
-            _reservationService = reservationService;
         }
+        
+  /*      private readonly IMapper _mapper;
+        public ReservationController(ProjectConfiguration configuration, IMapper mapper) : base(configuration)
+        {
+            _mapper = mapper;  }*/ 
 
         [Route("createReservation")]
         [HttpPost]
@@ -34,7 +40,6 @@ namespace ReservationService.Controllers
 
             return Ok(newReservation);
         }
-
         [Route("guestCancel")]
         [HttpPut]
         public bool CancelReservationByGuest([FromBody] Reservation reservation)
@@ -71,7 +76,25 @@ namespace ReservationService.Controllers
         {
             var reservation = _reservationService.GetById(id);
             return reservation ?? NotFound();
-        }
+
+   /*     [Route("updateReservation")]
+        [HttpPut]
+        public IActionResult UpdateReservation(long id, ReservationDTO reservationDto)
+        {
+            ReservationService.Services.ReservationService reservationService = new ReservationService.Services.ReservationService();
+
+            if (reservationDto == null)
+                return BadRequest(new { message = "Wrong reservation, please check your fields"});
+
+            Reservation reservation =
+                reservationService.UpdateReservation(id, _mapper.Map<Reservation>(reservationDto), reservationDto.TermId);
+            
+            if(reservation == null)
+                return BadRequest(new { message = "Wrong reservation, please check your fields"});
+
+            return Ok(new {message = "Updated reservation successfully"});
+
+        } */
 
         [HttpGet("host{id}")]
         public IActionResult GetByHostId(long id)

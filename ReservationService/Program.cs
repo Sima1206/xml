@@ -12,9 +12,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!;");
+
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
@@ -23,6 +25,7 @@ builder.Services.AddSingleton(projectConfiguration);
 
 builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 builder.Services.AddScoped<IReservationService, ReservationService.Services.ReservationService>();
+builder.Services.AddScoped<ITermService, TermService.Services.TermService>();
 
 var app = builder.Build();
 app.UseCors(x => x

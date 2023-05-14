@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReservationService.Core;
 using ReservationService.Model;
+using ReservationService.Model.DTO;
 
 namespace ReservationService.Repository
 {
@@ -15,6 +16,16 @@ namespace ReservationService.Repository
         {
             return ApplicationContext.Reservations.Where(x => startData > x.StartDate && endDate < x.EndDate).ToList();
         }
-     
+
+ /*       public List<Reservation> GetAllReservations() //Izvlaci sve rezervacije i include-uje accomodation u rezervaciji koji je deo nje
+        {                                              //kupi objekat od stranog kljuca
+            return ApplicationContext.Reservations.Include(r => r.Term.Accommodation).AsNoTracking().ToList();
+        }
+
+        public void UpdateReservation(Reservation reservation)
+        {
+            ApplicationContext.Entry(reservation).State = EntityState.Modified; 
+            ApplicationContext.SaveChanges(); 
+        } */
     }
 }

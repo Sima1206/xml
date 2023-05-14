@@ -11,11 +11,13 @@ namespace ReservationService.Core
         public UnitOfWork(ApplicationContext context)
         {
             _context = context;
-
+    
+            Terms = new TermRepository(_context);
             Accommodations = new AccommodationRepository(_context);
             Reservations = new ReservationRepository(_context);
         }
 
+        public ITermRepository Terms { get; private set; }
         public IAccommodationRepository Accommodations { get; private set; }
         public IReservationRepository Reservations { get; private set; }
 

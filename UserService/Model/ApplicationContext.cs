@@ -12,7 +12,6 @@ namespace UserService.Model
 
         public DbSet<User> Users { get; set; }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder builder) 
         {
             if (builder.IsConfigured)
@@ -21,6 +20,7 @@ namespace UserService.Model
             }
 
             builder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+
         }
     }
 }

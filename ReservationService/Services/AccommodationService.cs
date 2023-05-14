@@ -25,6 +25,9 @@ namespace ReservationService.Services
                 accommodation.Price = dto.Price;
                 accommodation.AutoAcceptReservations = dto.AutoAcceptReservations;
 
+                accommodation.PriceForPerson = dto.PriceForPerson;
+  
+
                 unitOfWork.Accommodations.Add(accommodation);
                 unitOfWork.Complete();
 

@@ -14,6 +14,6 @@
         public double Price { get; set; }
         public bool AutoAcceptReservations  { get; set; }
 
-
+        public bool PriceForPerson { get; set; }
     }
 }
