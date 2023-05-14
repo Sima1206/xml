@@ -16,6 +16,6 @@ namespace ReservationService.Core
         object? IsAccommodationAvailable(long id);
         public double TotalPrice(Reservation dto);
         object? GetByHostId(long id);
-        object? GetByAccommodation(long id);
+        object? GetByAccommodationId(long id);
     }
 }

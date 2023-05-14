@@ -90,7 +90,7 @@ namespace ReservationService.Controllers
         [HttpGet("accommodation{id}")]
         public IActionResult GetByAccommodation(long id)
         {
-            var reservations = _reservationService.GetByAccommodation(id);
+            var reservations = _reservationService.GetByAccommodationId(id);
             return Ok(reservations);
         }
 

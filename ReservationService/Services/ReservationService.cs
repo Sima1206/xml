@@ -60,7 +60,7 @@ namespace ReservationService.Services
             }
         }
 
-        public void DeletePendingReservation(long id)
+        private void DeletePendingReservation(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var reservation = unitOfWork.Reservations.Get(id);
@@ -74,7 +74,7 @@ namespace ReservationService.Services
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            if (reservation.Accepted == false && !CanItBeCancled(reservation))
+            if (!CanItBeCancled(reservation))
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
@@ -88,7 +88,7 @@ namespace ReservationService.Services
         private static bool CanItBeCancled(Reservation reservation)
         {
             var dif = DateTime.Now - reservation.StartDate.Date;
-            return dif.TotalDays < 2;
+            return dif.TotalDays < 1;
         }
 
         private static bool MatchedAccommodation(Reservation matchingReservation, Reservation reservation)
@@ -143,7 +143,7 @@ namespace ReservationService.Services
                 select reservation).ToList();
         }
 
-        public object? GetByAccommodation(long id)
+        public object? GetByAccommodationId(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             return unitOfWork.Reservations.GetAll().Where(reservation => reservation.AccommodationId == id).ToList();
