@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace UserService.Migrations
+namespace ReservationService.Migrations
 {
-    public partial class Init2 : Migration
+    public partial class Init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

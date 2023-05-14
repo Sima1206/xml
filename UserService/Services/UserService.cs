@@ -34,8 +34,8 @@ namespace UserService.Services
                 user.Email = dto.Email;
                 user.CityId = dto.CityId;
                 user.Enabled = true;
-                user.userType = UserType.User;
-
+                user.userType = dto.userType;
+                user.cancelCount = 0;
                 unitOfWork.Users.Add(user);
                 unitOfWork.Complete();
 
@@ -47,27 +47,15 @@ namespace UserService.Services
             }
         }
 
-        public User UpdateProfile(UserDTO dto)
+        public User UpdateProfile(User dto)
         {
             try
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
-
-                User user = new User();
-
-                user.Name = dto.Name;
-                user.Surname = dto.Surname;
-                user.Email = dto.Email;
-                user.Password = dto.Password;
-                user.CityId = dto.CityId;
-                user.Enabled = true;
-                user.userType = dto.userType;
-
-
-                unitOfWork.Users.Update(user);
+                unitOfWork.Users.Update(dto);
                 unitOfWork.Complete();
 
-                return user;
+                return dto;
             }
             catch (Exception e)
             {
@@ -75,9 +63,59 @@ namespace UserService.Services
             }
         }
 
+        public bool DeleteGuestAccount(long guestId)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var user = unitOfWork.Users.Get(guestId);
+            if (user == null || user.Deleted || user.userType != UserType.Guest)
+            {
+                return false;
+            }
+            if (GuestHasReservations(guestId))
+            {
+                return false;
+            }
+            user.Deleted = true;
+            UpdateProfile(user);
+            unitOfWork.Complete();
+            return true;
+        }
+        
+        public bool DeleteHostAccount(long hostId)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            var user = unitOfWork.Users.Get(hostId);
+            if (user == null || user.Deleted || user.userType != UserType.Host)
+            {
+                return false;
+            }
+            if (HostHasActiveReservations(hostId))
+            {
+                return false;
+            }
+            //accomodationService.DeleteAccommodationsByHostId(hostId);
+            user.Deleted = true;
+            UpdateProfile(user);
+            unitOfWork.Complete();
+            return true;
+            
 
+            return true;
+        }
 
-
-
+        private bool GuestHasReservations(long guestId)
+        {
+            // var reservations = _reservationService.GetByGuestId(guestId);
+            //return reservations.Any();
+            return false;
+        }
+        private bool HostHasActiveReservations(long hostId)
+        {
+            // var reservations = _reservationService.GetByHostId(hostId).Where(reservation => reservation.Accepted == true);
+            // var today = DateTime.Today;
+            // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
+            return false;
+        }
+        
     }
 }

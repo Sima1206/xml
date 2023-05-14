@@ -15,7 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
-    optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO7;Initial Catalog=User;Integrated Security=true;");
+    optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
@@ -25,7 +26,10 @@ builder.Services.AddSingleton(projectConfiguration);
 builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
 
 var app = builder.Build();
-
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -33,7 +37,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope()) 
+{
+    var dbContext = scope.ServiceProvider.GetService<ApplicationContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseAuthorization();
 

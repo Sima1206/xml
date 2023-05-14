@@ -15,7 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
-    optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=Reservation;Integrated Security=true;");
+    optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!;");
+
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
@@ -27,7 +28,10 @@ builder.Services.AddScoped<IReservationService, ReservationService.Services.Rese
 builder.Services.AddScoped<ITermService, TermService.Services.TermService>();
 
 var app = builder.Build();
-
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -35,7 +39,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetService<ApplicationContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseAuthorization();
 

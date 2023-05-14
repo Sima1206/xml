@@ -4,6 +4,7 @@ namespace ReservationService.Model
 {
     public class Accommodation : Entity
     {
+        public long HostId { get; set; }
         public string Name { get; set; }
         public long LocationId { get; set; }
         public string Pictures { get; set; }
@@ -13,6 +14,8 @@ namespace ReservationService.Model
         public int MinGuests { get; set; }
         public int MaxGuests { get; set; }
         public double Price { get; set; }
+        public bool AutoAcceptReservations  { get; set; }
+  
         public bool PriceForPerson { get; set; }
     }
 }

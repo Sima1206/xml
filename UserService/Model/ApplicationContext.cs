@@ -12,7 +12,6 @@ namespace UserService.Model
 
         public DbSet<User> Users { get; set; }
 
-    //DESKTOP-HE4F5VO
         protected override void OnConfiguring(DbContextOptionsBuilder builder) 
         {
             if (builder.IsConfigured)
@@ -20,7 +19,8 @@ namespace UserService.Model
                 return;
             }
 
-            builder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=User;Integrated Security=true;");
+            builder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+
         }
     }
 }

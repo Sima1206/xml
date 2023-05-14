@@ -61,11 +61,47 @@ namespace ReservationService.Controllers
 
             return Ok(searchedAccommodations);
         }
+        
+        [Route("deleteAccommodationsByHostId{id}")]
+        [HttpPut]
+        public IActionResult DeleteAccommodationsByHostId(long id)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+            var deleted = accommodationService.DeleteAccommodationsByHostId(id);
+            if (deleted == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+            
+        }
+
+
+        [Route("all")]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            var reservations = accommodationService.GetAll();
+            return Ok(reservations);
+        }
 
 
 
+        [HttpGet("accommodation{id}")]
+        public IActionResult GetById(long id)
+        {
+            AccommodationService accommodationService = new AccommodationService();
 
+            var reservations = accommodationService.GetById(id);
+            if (reservations is null)
+            {
+                return NotFound();
+            }
 
+            return Ok(reservations);
+        }
 
     }
 }
