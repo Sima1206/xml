@@ -36,7 +36,7 @@ namespace ReservationService.Controllers
         }
         
         [Route("guestCancel")]
-        [HttpDelete]
+        [HttpPut]
         public bool CancelReservationByGuest([FromBody] Reservation reservation)
         {
             return  _reservationService.CancelReservationByGuest(reservation);
@@ -85,6 +85,20 @@ namespace ReservationService.Controllers
 
             return Ok(reservations);
         }
+        
+        [HttpGet("guest{id}")]
+        public IActionResult GetByGuestId(long id)
+        {
+           var reservations =    _reservationService.GetByGuestId(id);
+
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reservations);
+        }
+        
         [HttpGet("accommodation{id}")]
         public IActionResult GetByAccommodation(long id)
         {
@@ -99,6 +113,19 @@ namespace ReservationService.Controllers
             return Ok(reservations);
         }
         
+          
+        [HttpGet("notAvailableDates{id}")]
+        public IActionResult GetNonAvailableDates(long id)
+        {
+            var dates =   _reservationService.IsAccommodationAvailable(id);
+
+            if (dates is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(dates);
+        }
   /*      [HttpGet("matching{id}")]
         public IActionResult GetWithMatchingPeriods(long id)
         {

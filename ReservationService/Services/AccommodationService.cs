@@ -77,7 +77,18 @@ namespace ReservationService.Services
                 return new List<Reservation>();
             }
         }
-        
 
+
+        public object? GetAll()
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Accommodations.GetAll();
+        }
+
+        public object? GetById(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Accommodations.Get(id);
+        }
     }
 }
