@@ -85,11 +85,12 @@ namespace ReservationService.Controllers
 
             return Ok(reservations);
         }
-        
+
         [HttpGet("guest{id}")]
         public IActionResult GetByGuestId(long id)
         {
            var reservations =    _reservationService.GetByGuestId(id);
+
 
             if (reservations is null)
             {

@@ -156,6 +156,13 @@ namespace ReservationService.Services
                 let accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId)
                 where accommodation.HostId == id select reservation).ToList();
         }
+        
+        public List<Reservation> GetByGuest(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.GuestId == id).ToList();
+        }
 
         public List<Reservation> GetByAccommodation(long id)
         {

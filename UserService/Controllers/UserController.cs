@@ -54,7 +54,33 @@ namespace UserService.Controllers
 
             return Ok(updatedUser);
         }
-
-
+        
+        [Route("deleteGuestAccount/{id}")]
+        [HttpPut]
+        public IActionResult DeleteGuestAccount(long id)
+        {
+            var deleted = _userService.DeleteGuestAccount(id);
+            if (deleted == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+            
+        }
+        
+        [Route("deleteHostAccount/{id}")]
+        [HttpPut]
+        public IActionResult DeleteHostAccount(long id)
+        {
+            var deleted = _userService.DeleteHostAccount(id);
+            if (deleted == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+            
+        }
     }
 }
+    
+    
