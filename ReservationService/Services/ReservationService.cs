@@ -56,39 +56,37 @@ namespace ReservationService.Services
         public void DeleteReservationsWithMatchingPeriod(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            var allReservations = unitOfWork.Reservations.GetAll();
-            var allMatchedReservation = allReservations.Where(f => f.Id != reservation.Id);
-            foreach (var matchingReservation in allMatchedReservation)
+            var reservations = unitOfWork.Reservations.GetAll().Where(f => f.Id != reservation.Id);
+            foreach (var matchingReservation in reservations)
             {
                 if (MatchedAccommodation(matchingReservation, reservation) &&
                     MatchedPeriods(matchingReservation, reservation))
                 {
-
-                    matchingReservation.Accepted = false;
-                    matchingReservation.Deleted = true;
-                    UpdateReservation(matchingReservation);
+                    DeletePendingReservation(matchingReservation.Id);
                 }
             }
         }
-
-        //mozda na front i da ne prikazujes one sto je host odbio
         public void DeletePendingReservation(long id)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var reservation= unitOfWork.Reservations.Get(id);
             if (reservation.Deleted == false && reservation.Accepted == false)
             {
-                //nije obrisana od strane hosta kad je prihvatio ponudu tj stavio deleted na true
-                unitOfWork.Reservations.Remove(reservation);
+                reservation.Deleted = true;
+                UpdateReservation(reservation);
             }
         }
 
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            if (!reservation.Accepted || !CanItBeCancled(reservation)) return false;
-            unitOfWork.Reservations.Remove(reservation);
-            return true;
+            if (reservation.Accepted == false && !CanItBeCancled(reservation))
+            {
+                reservation.Deleted = true;
+                UpdateReservation(reservation);
+                return true;
+            }
+            return false;
             //servis za usere nek poveca count otkazivanja
         }
 
@@ -216,6 +214,55 @@ namespace ReservationService.Services
                 return true;
             }
             return false;
+        }
+
+        public object? GetByGuestId(long id)
+        {     using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.GuestId == id).ToList();
+
+        }
+
+        public object? IsAccommodationAvailable(long id)
+        {
+            List<Reservation> allAcceptedForAccommodation = AllAcceptedForAccommodation(id);
+            IEnumerable<DateTime> nonAvailableDates = NonAvailableDates(allAcceptedForAccommodation);
+            return nonAvailableDates;
+        }
+
+        /*
+        public bool IsAccommodationAvailable(DateTime reservationStartDate, DateTime reservationEndDate, long accommodationId)
+        {
+            List<Reservation> allAcceptedForAccommodation = AllAcceptedForAccommodation(accommodationId);
+            IEnumerable<DateTime> nonAvailableDates = NonAvailableDates(allAcceptedForAccommodation);
+            var reservationDates = new List<DateTime>();
+            var dateTime = reservationStartDate;
+            while (dateTime != reservationEndDate)
+            {
+                reservationDates.Add(dateTime);
+                dateTime.AddDays(1);
+            }
+            var firstNotSecond = nonAvailableDates.Except(reservationDates).ToList();
+            var secondNotFirst = reservationDates.Except(nonAvailableDates).ToList();
+            return !firstNotSecond.Any() && !secondNotFirst.Any();
+        } */
+    
+        private List<Reservation> AllAcceptedForAccommodation(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.AccommodationId == id && reservation.Accepted ).ToList();
+        }
+
+        private IEnumerable<DateTime> NonAvailableDates(List<Reservation> allAcceptedReservations)
+        {
+            var nonAvailableDates = new List<DateTime>();
+            foreach (var reservation in allAcceptedReservations)
+            {
+             nonAvailableDates.Add(reservation.StartDate);
+             var dateTime = reservation.StartDate.AddDays(1);
+             if (dateTime == reservation.EndDate) break;
+            }
+
+            return nonAvailableDates;
         }
     }
 }

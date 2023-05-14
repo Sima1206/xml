@@ -90,8 +90,19 @@ namespace ReservationService.Services
             
             return true;
         }
-        
-        
 
+
+
+        public object? GetAll()
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Accommodations.GetAll();
+        }
+
+        public object? GetById(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Accommodations.Get(id);
+        }
     }
 }

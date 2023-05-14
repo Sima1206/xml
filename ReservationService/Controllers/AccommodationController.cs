@@ -77,9 +77,31 @@ namespace ReservationService.Controllers
         }
 
 
+        [Route("all")]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            var reservations = accommodationService.GetAll();
+            return Ok(reservations);
+        }
 
 
 
+        [HttpGet("accommodation{id}")]
+        public IActionResult GetById(long id)
+        {
+            AccommodationService accommodationService = new AccommodationService();
+
+            var reservations = accommodationService.GetById(id);
+            if (reservations is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(reservations);
+        }
 
     }
 }

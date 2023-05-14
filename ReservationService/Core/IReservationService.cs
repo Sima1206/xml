@@ -19,5 +19,7 @@ namespace ReservationService.Core
         //  bool Delete(int id);
         void AcceptReservation(Reservation reservation);
         object? GetWithMatchingPeriods(long id);
+        object? GetByGuestId(long id);
+        object? IsAccommodationAvailable(long id);
     }
 }
