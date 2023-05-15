@@ -17,6 +17,11 @@ builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+    {
+        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().Build();
+    }
+));
 
 ProjectConfiguration projectConfiguration = new ProjectConfiguration();
 builder.Services.AddSingleton(projectConfiguration);
@@ -42,6 +47,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseAuthorization();
+
+app.UseCors("MyPolicy");
 
 app.MapControllers();
 

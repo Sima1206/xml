@@ -80,6 +80,33 @@ namespace UserService.Controllers
             return BadRequest();
             
         }
+        [Route("getUserByID/{id}")]
+        [HttpGet]
+        public IActionResult GetUserByID(long id)
+        {
+            User user = _userService.GetUserByID(id);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user);
+        }
+        
+        [Route("updatee")]
+        [HttpPut]
+        public IActionResult Updatee(UserProfileDTO dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest();
+            }
+
+            User updatedUser = _userService.Updatee(dto);
+
+            return Ok(updatedUser);
+        }
     }
 }
     

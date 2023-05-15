@@ -10,5 +10,7 @@ namespace UserService.Core
         User UpdateProfile(User dto);
         bool DeleteGuestAccount(long guestId);
         bool DeleteHostAccount(long hostId);
+        User GetUserByID(long id);
+        User Updatee(UserProfileDTO dto);
     }
 }

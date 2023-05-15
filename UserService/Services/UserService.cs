@@ -116,6 +116,36 @@ namespace UserService.Services
             // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
             return false;
         }
-        
+        public User GetUserByID(long id)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new(new ApplicationContext());
+                User user = unitOfWork.Users.GetUserByID(id);
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public User Updatee(UserProfileDTO dto)
+        {
+            try
+            {
+                using UnitOfWork unitOfWork = new(new ApplicationContext());
+                User user = UserProfileDTO.ConvertToUser(dto);
+                unitOfWork.Users.Update(user);
+                unitOfWork.Complete();
+            
+                return user;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

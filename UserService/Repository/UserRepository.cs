@@ -14,5 +14,10 @@ namespace UserService.Repository
         {
             return ApplicationContext.Users.Where(x => x.Email == email).FirstOrDefault();
         }
+        public User GetUserByID(long id)
+        {
+            return ApplicationContext.Users.Where(x => x.Id == id && !x.Deleted).FirstOrDefault();
+
+        }
     }
 }
