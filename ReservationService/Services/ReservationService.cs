@@ -193,12 +193,11 @@ namespace ReservationService.Services
             foreach (var reservation in allAcceptedReservations)
             {
                 var dateTime = reservation.StartDate;
-                while(dateTime != reservation.EndDate)
+                var daysInBetween = (reservation.EndDate - reservation.StartDate).Days;
+               for(var i =0; i <= daysInBetween; i++)
                 {
-                    nonAvailableDates.Add(dateTime);
-                    dateTime.AddDays(1);
+                    nonAvailableDates.Add(dateTime.AddDays(i));
                 }
-                nonAvailableDates.Add(reservation.EndDate);
             }
             return nonAvailableDates;
         }
