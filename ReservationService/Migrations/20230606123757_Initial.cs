@@ -25,6 +25,7 @@ namespace ReservationService.Migrations
                     MinGuests = table.Column<int>(type: "int", nullable: false),
                     MaxGuests = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
+                    PriceForOneGuest = table.Column<bool>(type: "bit", nullable: false),
                     AutoAcceptReservations = table.Column<bool>(type: "bit", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false)
                 },

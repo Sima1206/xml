@@ -201,5 +201,41 @@ namespace ReservationService.Services
             }
             return nonAvailableDates;
         }
+        
+        public bool CheckIfAccommodationCanBeReserved(long accommodationID, DateTime startDate, DateTime endDate)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            DateTime today = DateTime.Today;
+
+            IEnumerable<Reservation> reservations =
+                unitOfWork.Reservations.GetAllReservationsForAccommodation(accommodationID, today);
+
+            foreach (Reservation res in reservations)
+            {
+                if (startDate <= res.StartDate && endDate >= res.StartDate)
+                {
+                    return false;
+                }
+                if (startDate >= res.StartDate && startDate <= res.EndDate)
+                {
+                    return false;
+                }
+                
+                if (startDate <= res.StartDate && endDate >= res.EndDate)
+                {
+                    return false;
+                }
+                if (startDate >= res.StartDate && endDate <= res.EndDate)
+                {
+                    return false;
+                }
+
+
+            }
+
+            return true;
+
+        }
     }
 }

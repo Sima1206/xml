@@ -9,5 +9,8 @@ namespace ReservationService.Core
         public IEnumerable<Accommodation> SearchByGuestsNum(int guestsNum);
         public IEnumerable<Accommodation> SearchByLocation(long location);
         public IEnumerable<Reservation> SearchByDate(DateTime startData, DateTime endDate);
+        
+        IEnumerable<Accommodation> Search(int guestNum, long location, DateTime startDate, DateTime endDate);
+
     }
 }

@@ -14,9 +14,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
-    optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!;");
+    optionBuilder.UseSqlServer("Data Source=DESKTOP-P0VP12J;Initial Catalog=Reservation;Integrated Security=true;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+    {
+        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().Build();
+    }
+));
 
 ProjectConfiguration projectConfiguration = new ProjectConfiguration();
 builder.Services.AddSingleton(projectConfiguration);
@@ -43,6 +48,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseAuthorization();
+
+app.UseCors("MyPolicy");
 
 app.MapControllers();
 

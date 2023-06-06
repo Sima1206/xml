@@ -17,5 +17,8 @@ namespace ReservationService.Core
         public double TotalPrice(Reservation dto);
         object? GetByHostId(long id);
         object? GetByAccommodationId(long id);
+        
+        bool CheckIfAccommodationCanBeReserved(long accommodationID, DateTime startDate, DateTime endDate);
+
     }
 }

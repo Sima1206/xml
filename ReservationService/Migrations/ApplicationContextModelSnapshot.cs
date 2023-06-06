@@ -65,6 +65,9 @@ namespace ReservationService.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<bool>("PriceForOneGuest")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Wifi")
                         .HasColumnType("bit");
 
@@ -98,9 +101,6 @@ namespace ReservationService.Migrations
 
                     b.Property<int>("NumGuests")
                         .HasColumnType("int");
-
-                    b.Property<bool>("PriceForOneGuest")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
