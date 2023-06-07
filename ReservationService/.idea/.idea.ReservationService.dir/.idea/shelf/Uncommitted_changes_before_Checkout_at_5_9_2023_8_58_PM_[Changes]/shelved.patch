@@ -1,0 +1,147 @@
+Index: Model/ApplicationContext.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Microsoft.EntityFrameworkCore;\r\n\r\nnamespace ReservationService.Model\r\n{\r\n    public class ApplicationContext : DbContext\r\n    {\r\n        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)\r\n        { }\r\n\r\n        public ApplicationContext() { }\r\n\r\n        public DbSet<Accommodation> Accommodations { get; set; }\r\n        public DbSet<Reservation> Reservations { get; set; }\r\n\r\n        protected override void OnConfiguring(DbContextOptionsBuilder builder)\r\n        {\r\n            if (builder.IsConfigured)\r\n            {\r\n                return;\r\n            }\r\n\r\n            builder.UseSqlServer(\"Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;\");\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/ApplicationContext.cs b/Model/ApplicationContext.cs
+--- a/Model/ApplicationContext.cs	
++++ b/Model/ApplicationContext.cs	
+@@ -10,6 +10,7 @@
+         public ApplicationContext() { }
+ 
+         public DbSet<Accommodation> Accommodations { get; set; }
++        public DbSet<Term> Terms { get; set; }
+         public DbSet<Reservation> Reservations { get; set; }
+ 
+         protected override void OnConfiguring(DbContextOptionsBuilder builder)
+@@ -19,7 +20,7 @@
+                 return;
+             }
+ 
+-            builder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
++            builder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=Reservation;Integrated Security=true;");
+         }
+     }
+ }
+Index: Program.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Microsoft.EntityFrameworkCore;\r\nusing ReservationService.Configuration;\r\nusing ReservationService.Core;\r\nusing ReservationService.Model;\r\nusing ReservationService.Services;\r\n\r\nvar builder = WebApplication.CreateBuilder(args);\r\n\r\n// Add services to the container.\r\n\r\nbuilder.Services.AddControllers();\r\n// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle\r\nbuilder.Services.AddEndpointsApiExplorer();\r\nbuilder.Services.AddSwaggerGen();\r\n\r\nbuilder.Services.AddDbContext<ApplicationContext>(optionBuilder => {\r\n    optionBuilder.UseSqlServer(\"Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;\");\r\n    optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);\r\n});\r\n\r\nProjectConfiguration projectConfiguration = new ProjectConfiguration();\r\nbuilder.Services.AddSingleton(projectConfiguration);\r\n\r\nbuilder.Services.AddScoped<IAccommodationService, AccommodationService>();\r\nbuilder.Services.AddScoped<IReservationService, ReservationService.Services.ReservationService>();\r\n\r\nvar app = builder.Build();\r\napp.UseCors(x => x\r\n    .AllowAnyOrigin()\r\n    .AllowAnyMethod()\r\n    .AllowAnyHeader());\r\n// Configure the HTTP request pipeline.\r\nif (app.Environment.IsDevelopment())\r\n{\r\n    app.UseSwagger();\r\n    app.UseSwaggerUI();\r\n}\r\n\r\napp.UseHttpsRedirection();\r\n\r\napp.UseAuthorization();\r\n\r\napp.MapControllers();\r\n\r\napp.Run();\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Program.cs b/Program.cs
+--- a/Program.cs	
++++ b/Program.cs	
+@@ -14,7 +14,7 @@
+ builder.Services.AddSwaggerGen();
+ 
+ builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
+-    optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
++    optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=Reservation;Integrated Security=true;");
+     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+ });
+ 
+Index: Model/Reservation.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>namespace ReservationService.Model\r\n{\r\n    public class Reservation : Entity\r\n    {\r\n        public long AccommodationId   { get; set; }\r\n        public DateTime StartDate { get; set; }\r\n        public DateTime EndDate { get; set; }\r\n        public int NumGuests { get; set; }\r\n        public bool Accepted { get; set; }\r\n        public double TotalPrice { get; set; }\r\n        public long GuestId  { get; set; }\r\n\r\n        public Reservation()\r\n        {\r\n        }\r\n\r\n        public Reservation(long id, bool deleted, long accommodation,\r\n            DateTime startDate, DateTime endDate, int numGuests, bool accepted, double totalPrice, long guestId)\r\n        {\r\n            id = Id;\r\n            deleted = Deleted;\r\n            accepted = Accepted;\r\n            accommodation = AccommodationId;\r\n            startDate = StartDate;\r\n            endDate = EndDate;\r\n            numGuests = NumGuests;\r\n            totalPrice = TotalPrice;\r\n            guestId = GuestId;\r\n        }\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/Reservation.cs b/Model/Reservation.cs
+--- a/Model/Reservation.cs	
++++ b/Model/Reservation.cs	
+@@ -2,6 +2,7 @@
+ {
+     public class Reservation : Entity
+     {
++        public long TermId { get; set; }
+         public long AccommodationId   { get; set; }
+         public DateTime StartDate { get; set; }
+         public DateTime EndDate { get; set; }
+@@ -14,12 +15,13 @@
+         {
+         }
+ 
+-        public Reservation(long id, bool deleted, long accommodation,
++        public Reservation(long id, bool deleted, long  term,long accommodation,
+             DateTime startDate, DateTime endDate, int numGuests, bool accepted, double totalPrice, long guestId)
+         {
+             id = Id;
+             deleted = Deleted;
+             accepted = Accepted;
++            term = TermId;
+             accommodation = AccommodationId;
+             startDate = StartDate;
+             endDate = EndDate;
+Index: Migrations/ApplicationContextModelSnapshot.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// <auto-generated />\r\nusing System;\r\nusing Microsoft.EntityFrameworkCore;\r\nusing Microsoft.EntityFrameworkCore.Infrastructure;\r\nusing Microsoft.EntityFrameworkCore.Metadata;\r\nusing Microsoft.EntityFrameworkCore.Storage.ValueConversion;\r\nusing ReservationService.Model;\r\n\r\n#nullable disable\r\n\r\nnamespace ReservationService.Migrations\r\n{\r\n    [DbContext(typeof(ApplicationContext))]\r\n    partial class ApplicationContextModelSnapshot : ModelSnapshot\r\n    {\r\n        protected override void BuildModel(ModelBuilder modelBuilder)\r\n        {\r\n#pragma warning disable 612, 618\r\n            modelBuilder\r\n                .HasAnnotation(\"ProductVersion\", \"6.0.16\")\r\n                .HasAnnotation(\"Relational:MaxIdentifierLength\", 128);\r\n\r\n            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);\r\n\r\n            modelBuilder.Entity(\"ReservationService.Model.Accommodation\", b =>\r\n                {\r\n                    b.Property<long>(\"Id\")\r\n                        .ValueGeneratedOnAdd()\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>(\"Id\"), 1L, 1);\r\n\r\n                    b.Property<bool>(\"AutoAcceptReservations\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<bool>(\"Deleted\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<bool>(\"FreeParking\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<long>(\"HostId\")\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    b.Property<bool>(\"Kitchen\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<long>(\"LocationId\")\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    b.Property<int>(\"MaxGuests\")\r\n                        .HasColumnType(\"int\");\r\n\r\n                    b.Property<int>(\"MinGuests\")\r\n                        .HasColumnType(\"int\");\r\n\r\n                    b.Property<string>(\"Name\")\r\n                        .IsRequired()\r\n                        .HasColumnType(\"nvarchar(max)\");\r\n\r\n                    b.Property<string>(\"Pictures\")\r\n                        .IsRequired()\r\n                        .HasColumnType(\"nvarchar(max)\");\r\n\r\n                    b.Property<double>(\"Price\")\r\n                        .HasColumnType(\"float\");\r\n\r\n                    b.Property<bool>(\"Wifi\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.HasKey(\"Id\");\r\n\r\n                    b.ToTable(\"Accommodations\");\r\n                });\r\n\r\n            modelBuilder.Entity(\"ReservationService.Model.Reservation\", b =>\r\n                {\r\n                    b.Property<long>(\"Id\")\r\n                        .ValueGeneratedOnAdd()\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>(\"Id\"), 1L, 1);\r\n\r\n                    b.Property<bool>(\"Accepted\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<long>(\"AccommodationId\")\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    b.Property<bool>(\"Deleted\")\r\n                        .HasColumnType(\"bit\");\r\n\r\n                    b.Property<DateTime>(\"EndDate\")\r\n                        .HasColumnType(\"datetime2\");\r\n\r\n                    b.Property<long>(\"GuestId\")\r\n                        .HasColumnType(\"bigint\");\r\n\r\n                    b.Property<int>(\"NumGuests\")\r\n                        .HasColumnType(\"int\");\r\n\r\n                    b.Property<DateTime>(\"StartDate\")\r\n                        .HasColumnType(\"datetime2\");\r\n\r\n                    b.Property<double>(\"TotalPrice\")\r\n                        .HasColumnType(\"float\");\r\n\r\n                    b.HasKey(\"Id\");\r\n\r\n                    b.ToTable(\"Reservations\");\r\n                });\r\n#pragma warning restore 612, 618\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Migrations/ApplicationContextModelSnapshot.cs b/Migrations/ApplicationContextModelSnapshot.cs
+--- a/Migrations/ApplicationContextModelSnapshot.cs	
++++ b/Migrations/ApplicationContextModelSnapshot.cs	
+@@ -102,6 +102,9 @@
+                     b.Property<DateTime>("StartDate")
+                         .HasColumnType("datetime2");
+ 
++                    b.Property<long>("TermId")
++                        .HasColumnType("bigint");
++
+                     b.Property<double>("TotalPrice")
+                         .HasColumnType("float");
+ 
+@@ -109,6 +112,47 @@
+ 
+                     b.ToTable("Reservations");
+                 });
++
++            modelBuilder.Entity("ReservationService.Model.Term", b =>
++                {
++                    b.Property<long>("Id")
++                        .ValueGeneratedOnAdd()
++                        .HasColumnType("bigint");
++
++                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
++
++                    b.Property<long>("AccommodationId")
++                        .HasColumnType("bigint");
++
++                    b.Property<double>("AdditionPrice")
++                        .HasColumnType("float");
++
++                    b.Property<bool>("Deleted")
++                        .HasColumnType("bit");
++
++                    b.Property<DateTime>("EndDate")
++                        .HasColumnType("datetime2");
++
++                    b.Property<DateTime>("StartDate")
++                        .HasColumnType("datetime2");
++
++                    b.HasKey("Id");
++
++                    b.HasIndex("AccommodationId");
++
++                    b.ToTable("Terms");
++                });
++
++            modelBuilder.Entity("ReservationService.Model.Term", b =>
++                {
++                    b.HasOne("ReservationService.Model.Accommodation", "Accommodation")
++                        .WithMany()
++                        .HasForeignKey("AccommodationId")
++                        .OnDelete(DeleteBehavior.Cascade)
++                        .IsRequired();
++
++                    b.Navigation("Accommodation");
++                });
+ #pragma warning restore 612, 618
+         }
+     }
