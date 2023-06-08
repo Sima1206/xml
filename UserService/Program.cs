@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
@@ -25,6 +28,20 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 
 ProjectConfiguration projectConfiguration = new ProjectConfiguration();
 builder.Services.AddSingleton(projectConfiguration);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5245",
+        ValidAudience = "http://localhost:5245",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ACDt1vR3lXToPQ1g3MyN")),
+    };
+});
 
 builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
 

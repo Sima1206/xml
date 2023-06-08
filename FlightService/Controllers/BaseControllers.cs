@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FlightService.Controllers
 {
@@ -15,7 +16,7 @@ namespace FlightService.Controllers
         protected ProjectConfiguration _configuration;
         protected IUserService _userService;
 
-        public BaseController(ProjectConfiguration configuration, IUserService userService)
+        public BaseController(IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
             _userService = userService;

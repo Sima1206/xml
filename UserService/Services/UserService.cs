@@ -47,6 +47,21 @@ namespace UserService.Services
             }
         }
 
+
+        public User Login(string email, string password)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            foreach (User user in unitOfWork.Users.GetAll())
+            {
+                if (user.Email == email && BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    return user;
+                }
+                
+            }
+            return null;
+        } 
         public User UpdateProfile(User dto)
         {
             try
