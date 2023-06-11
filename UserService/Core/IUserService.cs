@@ -12,5 +12,6 @@ namespace UserService.Core
         bool DeleteHostAccount(long hostId);
         User GetUserByID(long id);
         User Updatee(UserProfileDTO dto);
+        User Login(string email, string password);
     }
 }

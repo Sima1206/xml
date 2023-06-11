@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
@@ -107,6 +111,8 @@ namespace UserService.Controllers
 
             return Ok(updatedUser);
         }
+
+
     }
 }
     

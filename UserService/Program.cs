@@ -3,6 +3,9 @@ using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
 using UserService.Services;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5245",
+        ValidAudience = "http://localhost:5245",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ACDt1vR3lXToPQ1g3MyN")),
+    };
 });
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {
