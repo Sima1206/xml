@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FlightService.Controllers
 {
@@ -12,10 +13,10 @@ namespace FlightService.Controllers
     [Route("api/[controller")]
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
-        protected ProjectConfiguration _configuration;
+        protected IConfiguration _configuration;
         protected IUserService _userService;
 
-        public BaseController(ProjectConfiguration configuration, IUserService userService)
+        public BaseController(IConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
             _userService = userService;

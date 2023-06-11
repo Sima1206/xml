@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace FlightService.Controllers
 {
@@ -19,50 +21,52 @@ namespace FlightService.Controllers
         public class AuthController : BaseController<User>
         {
             private readonly IUserService _userService;
-            private readonly ProjectConfiguration _configuration;
+            private readonly IConfiguration _configuration;
 
-            public AuthController(ProjectConfiguration configuration, IUserService userService) : base(configuration, userService)
+            public AuthController(IConfiguration configuration, IUserService userService) : base(configuration, userService)
             {
                 _configuration = configuration;
                 _userService = userService;
             }
 
-            [Route("login")]
-            [HttpPost]
-            public IActionResult Login(LoginDTO login)
+            [HttpPost("login")]
+            [AllowAnonymous]
+            public async Task<IActionResult> Login(LoginDTO dto)
             {
-                if (login.ClientID != _configuration.ClientID || login.ClientSecret != _configuration.ClientSecret)
+                try
                 {
-                    return BadRequest("ClientID or ClientSecret was not correct, please check again.");
+                    User user = _userService.Login(dto.Email, dto.Password);
+
+                    if (user == null)
+                    {
+                        return NotFound(new { message = "Korisnik nije pronadjen" });
+                    }
+                    //ovde uradi generisanje tokena
+                    string tokenJwt = TokenJwt(user);
+                    return Ok(new {JwtToken = tokenJwt});
                 }
-
-                if (login == null || login.Email == null || login.Password == null)
+                catch (Exception e)
                 {
-                    return BadRequest("Invalid client request.");
+                    return BadRequest(new {message = "Niste uneli sve potrebne podatke"});
                 }
-
-                User user = _userService.GetUserWithEmail(login.Email);
-
-                if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
-                {
-                    return BadRequest("Invalid credentials.");
-                }
-
-                Claim[] claims = new[]
-                {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration.Jwt.Subject),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("Id", user.Id.ToString()),
-                new Claim("Email", user.Email)
-
-                };
-                SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration.Jwt.Key));
-                SigningCredentials signIn = new(key, SecurityAlgorithms.HmacSha256);
-                JwtSecurityToken token = new(_configuration.Jwt.Issuer, _configuration.Jwt.Audience, claims, expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
-
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
             }
+
+            private string TokenJwt(User user)
+            {
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])); //pristupamo kljucu
+                var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); //HmacSha256 alg sa sifrovanje
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Email),
+                    new Claim(ClaimTypes.Role, user.UserType.ToString())
+                };
+
+                var tokenJwt = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"],
+                    claims, expires:DateTime.Now.AddMinutes(30), signingCredentials:credentials);
+
+                var token =  new JwtSecurityTokenHandler().WriteToken(tokenJwt);
+                return token;
+            } 
         }
     
 }

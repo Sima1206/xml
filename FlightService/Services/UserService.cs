@@ -53,6 +53,19 @@ namespace FlightService.Services
             }
         }
 
+        public User Login(string email, string password)
+        {
+            foreach (User user in GetAsync().Result)
+            {
+                if (user.Email == email && BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    return user;
+                }
+                
+            }
+            return null;
+        }
+
         public User GetUserWithEmail(string email)
         {
             try
