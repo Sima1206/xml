@@ -55,7 +55,9 @@ namespace FlightService.Services
 
         public User Login(string email, string password)
         {
-            foreach (User user in GetAsync().Result)
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            foreach (User user in unitOfWork.Users.GetAll())
             {
                 if (user.Email == email && BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
@@ -64,7 +66,7 @@ namespace FlightService.Services
                 
             }
             return null;
-        }
+        } 
 
         public User GetUserWithEmail(string email)
         {
