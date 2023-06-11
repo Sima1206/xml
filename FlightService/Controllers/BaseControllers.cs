@@ -13,10 +13,10 @@ namespace FlightService.Controllers
     [Route("api/[controller")]
     public class BaseController<TEntity> : ControllerBase where TEntity : class
     {
-        protected IConfiguration _configuration;
+        protected ProjectConfiguration _configuration;
         protected IUserService _userService;
 
-        public BaseController(IConfiguration configuration, IUserService userService)
+        public BaseController(ProjectConfiguration configuration, IUserService userService)
         {
             _configuration = configuration;
             _userService = userService;

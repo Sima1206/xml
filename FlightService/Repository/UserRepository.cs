@@ -35,6 +35,11 @@ namespace FlightService.Repository
             return _userCollection.Find(x => x.Id == Id).FirstOrDefault();
         }
 
+        public List<User> GetAll()
+        {
+            return _userCollection.Find(_ => true).ToList();
+        }
+
         public User GetUserWithEmail(string email)
         {
             return _userCollection.Find(x => x.Email == email).FirstOrDefault();

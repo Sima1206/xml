@@ -11,5 +11,7 @@ namespace FlightService.Core
         User GetUserWithEmail(string email);
         void Add(User user);
         User Get(string email);
+
+        List<User> GetAll();
     }
 }

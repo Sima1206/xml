@@ -55,7 +55,7 @@ namespace FlightService.Services
 
         public User Login(string email, string password)
         {
-            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            using UnitOfWork unitOfWork = new UnitOfWork(_configuration);
 
             foreach (User user in unitOfWork.Users.GetAll())
             {
