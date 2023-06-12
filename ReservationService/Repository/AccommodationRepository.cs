@@ -21,8 +21,8 @@ namespace ReservationService.Repository
         }
         public IEnumerable<Accommodation> Search(int guestNum, long location)
         {
-            return ApplicationContext.Accommodations.Where(x => location == x.LocationId && guestNum > x.MinGuests 
-                && guestNum < x.MaxGuests).ToList();
+            return ApplicationContext.Accommodations.Where(x => location == x.LocationId && guestNum >= x.MinGuests 
+                && guestNum <= x.MaxGuests).ToList();
         }
  
 
