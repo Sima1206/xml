@@ -18,12 +18,12 @@ namespace FlightService.Controllers
 {
         [ApiController]
         [Route("api/[controller]")]
-        public class AuthController : BaseController<User>
+        public class AuthController : Controller
         {
             private readonly IUserService _userService;
             private readonly IConfiguration _configuration;
 
-            public AuthController(IConfiguration configuration, IUserService userService) : base(configuration, userService)
+            public AuthController(IConfiguration configuration, IUserService userService)
             {
                 _configuration = configuration;
                 _userService = userService;

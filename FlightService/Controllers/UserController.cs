@@ -16,9 +16,9 @@ namespace FlightService.Controllers
     public class UserController : BaseController<User>
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
+        private readonly ProjectConfiguration _configuration;
 
-        public UserController(IConfiguration configuration, IUserService userService) : base(configuration, userService)
+        public UserController(ProjectConfiguration configuration, IUserService userService) : base(configuration, userService)
         {
             _configuration = configuration;
             _userService = userService;
