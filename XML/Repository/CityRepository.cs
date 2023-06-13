@@ -9,5 +9,10 @@ namespace XML.Repository
         public CityRepository(DbContext context) : base(context)
         {
         }
+        public City GetCityById(long id)
+        {
+            return ApplicationContext.Cities.Where(x => x.Id == id && !x.Deleted).FirstOrDefault();
+
+        }
     }
 }
