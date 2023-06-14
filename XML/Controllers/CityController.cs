@@ -11,5 +11,6 @@ namespace XML.Controllers
         public CityController(ProjectConfiguration configuration) : base(configuration)
         {
         }
+
     }
 }

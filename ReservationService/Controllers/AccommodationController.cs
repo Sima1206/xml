@@ -99,6 +99,22 @@ namespace ReservationService.Controllers
 
             return Ok(reservations);
         }
+        
+        [HttpGet("search/{guestsNum}/{location}/{startDate}/{endDate}")]
+        public IActionResult Search(int guestsNum,long location, DateTime startDate, DateTime endDate)
+        {
+            IReservationService reservationService = new Services.ReservationService();
+            ProjectConfiguration projectConfiguration = new ProjectConfiguration(); 
+            
+            AccommodationService accommodationService = new AccommodationService(projectConfiguration, reservationService);
+            
+            
+            // AccommodationService accommodationService = new AccommodationService();
+
+            IEnumerable<Accommodation> searchedAccommodations = accommodationService.Search(guestsNum,location,startDate, endDate);
+
+            return Ok(searchedAccommodations);
+        }
 
     }
 }

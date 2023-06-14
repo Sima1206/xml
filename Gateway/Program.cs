@@ -16,6 +16,11 @@ builder.Host.UseContentRoot(Directory.GetCurrentDirectory()).ConfigureAppConfigu
     .AddJsonFile("ocelot.json");
 
 });
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+    {
+        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().Build();
+    }
+));
 
 IConfiguration configuration = new ConfigurationBuilder()
                             .AddJsonFile("ocelot.json")
@@ -34,6 +39,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseCors("MyPolicy");
 
 app.UseEndpoints(endpoints =>
 {

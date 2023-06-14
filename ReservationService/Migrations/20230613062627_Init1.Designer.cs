@@ -12,7 +12,7 @@ using ReservationService.Model;
 namespace ReservationService.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230511052346_Init1")]
+    [Migration("20230613062627_Init1")]
     partial class Init1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,9 @@ namespace ReservationService.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<bool>("PriceForOneGuest")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Wifi")
                         .HasColumnType("bit");
