@@ -6,6 +6,8 @@ namespace ReservationService.Core
     {
         IEnumerable<Accommodation> SearchByGuestsNum(int guestsNum);
         IEnumerable<Accommodation> SearchByLocation(long location);
+        IEnumerable<Accommodation> Search(int guestsNum, long location);
+
 
 
     }

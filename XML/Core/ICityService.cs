@@ -2,6 +2,6 @@
 {
     public interface ICityService 
     {
-        City GetCityById(long id);
+        //City GetCityById(long id);
     }
 }

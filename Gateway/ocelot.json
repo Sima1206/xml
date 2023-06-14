@@ -61,6 +61,30 @@
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
     {
+      "DownstreamPathTemplate": "/api/reservation/createReservation",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/reservation/createReservation",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/accommodation/search/{guestsNum}/{location}/{startDate}/{endDate}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/accommodations/search/{guestsNum}/{location}/{startDate}/{endDate}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/user/getUserByID/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
