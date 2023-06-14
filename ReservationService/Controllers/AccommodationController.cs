@@ -19,19 +19,18 @@ namespace ReservationService.Controllers
         [HttpPost]
         public IActionResult CreateAccommodation(AccommodationDTO dto)
         {
-            AccommodationService accommodationService = new AccommodationService();
+            var accommodationService = new AccommodationService();
 
             if (dto == null)
             {
                 return BadRequest();
             }
 
-            Accommodation newAccommodation = accommodationService.CreateAccommodation(dto);
+            var newAccommodation = accommodationService.CreateAccommodation(dto);
 
             return Ok(newAccommodation);
         }
-
-
+        
         [HttpGet("searchAccomodationByGuests/guestsNum/{guestsNum}")]
         public IActionResult SearchByGuestsNum(int guestsNum)
         {
@@ -66,7 +65,7 @@ namespace ReservationService.Controllers
         [HttpPut]
         public IActionResult DeleteAccommodationsByHostId(long id)
         {
-            AccommodationService accommodationService = new AccommodationService();
+            var accommodationService = new AccommodationService();
             var deleted = accommodationService.DeleteAccommodationsByHostId(id);
             if (deleted == true)
             {
@@ -81,8 +80,7 @@ namespace ReservationService.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AccommodationService accommodationService = new AccommodationService();
-
+            var accommodationService = new AccommodationService();
             var reservations = accommodationService.GetAll();
             return Ok(reservations);
         }
@@ -92,8 +90,7 @@ namespace ReservationService.Controllers
         [HttpGet("accommodation{id}")]
         public IActionResult GetById(long id)
         {
-            AccommodationService accommodationService = new AccommodationService();
-
+            var accommodationService = new AccommodationService();
             var reservations = accommodationService.GetById(id);
             if (reservations is null)
             {
