@@ -11,7 +11,25 @@
       ],
       "UpstreamPathTemplate": "/users/register",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    }, 
+    
+    
+
+    {
+      "DownstreamPathTemplate": "/api/auth/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/login",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/user/updateProfile",
       "DownstreamScheme": "http",
@@ -24,6 +42,9 @@
       "UpstreamPathTemplate": "/users/updateProfile",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/user/deleteGuestAccount/{id}",
       "DownstreamScheme": "http",
@@ -36,6 +57,9 @@
       "UpstreamPathTemplate": "/users/deleteGuestAccount/{id}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/user/deleteHostAccount/{id}",
       "DownstreamScheme": "http",
@@ -48,6 +72,9 @@
       "UpstreamPathTemplate": "/users/deleteHostAccount/{id}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/accommodation/createAccomodation",
       "DownstreamScheme": "http",
@@ -60,6 +87,40 @@
       "UpstreamPathTemplate": "/accommodations/createAccomodation",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
+    {
+      "DownstreamPathTemplate": "/api/accommodation/all",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/accommodations/all",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    
+    
+    
+    {
+      "DownstreamPathTemplate": "/api/accommodation/accommodation{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/accommodations/accommodation{id}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
+    
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/reservation/createReservation",
       "DownstreamScheme": "http",
@@ -72,6 +133,9 @@
       "UpstreamPathTemplate": "/reservation/createReservation",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/accommodation/search/{guestsNum}/{location}/{startDate}/{endDate}",
       "DownstreamScheme": "http",
@@ -84,6 +148,9 @@
       "UpstreamPathTemplate": "/accommodations/search/{guestsNum}/{location}/{startDate}/{endDate}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/user/getUserByID/{id}",
       "DownstreamScheme": "http",
@@ -96,6 +163,9 @@
       "UpstreamPathTemplate": "/users/getUserByID/{id}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+    
+    
+    
     {
       "DownstreamPathTemplate": "/api/user/updatee",
       "DownstreamScheme": "http",
