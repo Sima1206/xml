@@ -109,7 +109,7 @@ namespace UserService.Controllers
 
             User updatedUser = _userService.Updatee(dto);
 
-            return Ok(updatedUser);
+            return Ok();
         }
 
 

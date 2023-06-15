@@ -24,17 +24,17 @@ namespace UserService.Controllers
     public class AuthController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
+        private readonly ProjectConfiguration _configuration;
 
-        public AuthController(IUserService userService, IConfiguration configuration)
+        public AuthController(IUserService userService, ProjectConfiguration configuration)
         {
             _userService = userService;
             _configuration = configuration;
         }
 
-      /*  [Route("login")]
+        [Route("login")]
         [HttpPost]
-        public IActionResult Login(LoginDTO login)
+        public ActionResult Login(LoginDTO login)
         {
 
             if (login == null || login.Email == null || login.Password == null) 
@@ -51,7 +51,7 @@ namespace UserService.Controllers
 
             Claim[] claims = new[]
             {
-                new Claim(JwtRegisteredClaimNaFmes.Sub, _configuration.Jwt.Subject),
+                new Claim(JwtRegisteredClaimNames.Sub, _configuration.Jwt.Subject),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 new Claim("Id", user.Id.ToString()),
@@ -61,11 +61,18 @@ namespace UserService.Controllers
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration.Jwt.Key));
             SigningCredentials signIn = new(key, SecurityAlgorithms.HmacSha256);
             JwtSecurityToken token = new(_configuration.Jwt.Issuer, _configuration.Jwt.Audience, expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
+            JWTPokusaj jwtPokusaj = new JWTPokusaj();
+            jwtPokusaj.text = new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(jwtPokusaj);
+        }
 
-            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
-        } */
-      
-      [HttpPost("login")]
+        public class JWTPokusaj
+        {
+            public string text { get; set; }
+
+            public JWTPokusaj() { }
+        }
+     /* [HttpPost("login")]
       [AllowAnonymous]
       public async Task<IActionResult> Login(LoginDTO dto)
       {
@@ -102,7 +109,7 @@ namespace UserService.Controllers
 
           var token =  new JwtSecurityTokenHandler().WriteToken(tokenJwt);
           return token;
-      } 
+      } */
 
     }
 }
