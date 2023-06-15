@@ -20,7 +20,7 @@ namespace UserService.Model
                 return;
             }
 
-            builder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+            builder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=User;Integrated Security=true;");
         }
     }
 }
