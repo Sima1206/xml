@@ -14,7 +14,7 @@ namespace ReservationService.Core
         void AcceptReservation(Reservation reservation);
         object? GetByGuestId(long id);
         object? IsAccommodationAvailable(long id);
-        public double TotalPrice(Reservation dto);
+        public double TotalPrice(long accommodationId, DateTime startDate, DateTime endDate, int numGuests);
         object? GetByHostId(long id);
         object? GetByAccommodationId(long id);
         

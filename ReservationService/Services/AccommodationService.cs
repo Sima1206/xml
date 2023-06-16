@@ -35,7 +35,7 @@ namespace ReservationService.Services
                 accommodation.MaxGuests = dto.MaxGuests;
                 accommodation.Price = dto.Price;
                 accommodation.AutoAcceptReservations = dto.AutoAcceptReservations;
-
+                accommodation.PriceForOneGuest = dto.PriceForOneGuest;
                 unitOfWork.Accommodations.Add(accommodation);
                 unitOfWork.Complete();
 

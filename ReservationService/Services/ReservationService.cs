@@ -22,7 +22,7 @@ namespace ReservationService.Services
                     reservation.GuestId = dto.GuestId;
                     reservation.NumGuests = dto.NumGuests;
                     reservation.Accepted = unitOfWork.Accommodations.Get(dto.AccommodationId).AutoAcceptReservations;
-                    reservation.TotalPrice = dto.TotalPrice;
+                    reservation.TotalPrice = TotalPrice(dto.AccommodationId,dto.StartDate ,  dto.EndDate, dto.NumGuests);
                 }
 
                 unitOfWork.Reservations.Add(reservation);
@@ -35,15 +35,15 @@ namespace ReservationService.Services
             }
         }
 
-        public double TotalPrice(Reservation reservation)
+        public double TotalPrice(long accommodationId, DateTime startDate, DateTime endDate, int numGuests)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
+            var accommodation = unitOfWork.Accommodations.Get(accommodationId);
             if (accommodation.PriceForOneGuest)
-            {
-                return accommodation.Price * (reservation.EndDate - reservation.StartDate).TotalDays * reservation.NumGuests;
+            { 
+                return accommodation.Price * (endDate - startDate).TotalDays * numGuests;
             }
-            return  accommodation.Price * (reservation.EndDate - reservation.StartDate).TotalDays;
+            return  accommodation.Price * (endDate - startDate).TotalDays;
         }
 
         private void DeleteReservationsWithMatchingPeriod(Reservation reservation)
@@ -194,7 +194,9 @@ namespace ReservationService.Services
             {
                 var dateTime = reservation.StartDate;
                 var daysInBetween = (reservation.EndDate - reservation.StartDate).Days;
+
                 for(var i =0; i <= daysInBetween; i++)
+
                 {
                     nonAvailableDates.Add(dateTime.AddDays(i));
                 }
