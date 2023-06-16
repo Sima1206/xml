@@ -23,10 +23,13 @@ namespace ReservationService.Controllers
         [HttpPost]
         public IActionResult CreateReservation(ReservationDTO? dto)
         {
+            
             if (dto == null)
             {
                 return BadRequest();
             }
+            if (dto.StartDate > dto.EndDate)
+                return BadRequest();
             var newReservation = _reservationService.CreateReservation(dto);
             return Ok(newReservation);
         }

@@ -22,7 +22,7 @@ namespace ReservationService.Services
                     reservation.GuestId = dto.GuestId;
                     reservation.NumGuests = dto.NumGuests;
                     reservation.Accepted = unitOfWork.Accommodations.Get(dto.AccommodationId).AutoAcceptReservations;
-                    reservation.TotalPrice = dto.TotalPrice;
+                    reservation.TotalPrice = TotalPrice(dto.AccommodationId,dto.StartDate ,  dto.EndDate, dto.NumGuests);
                 }
 
                 unitOfWork.Reservations.Add(reservation);
