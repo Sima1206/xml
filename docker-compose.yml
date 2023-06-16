@@ -46,10 +46,13 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./mssql/data:/var/opt/mssql/data
-      - ./backups:/var/backups
+      - type: volume
+        source: xml_volume
+        target: /var/opt/mssql
     networks:
         - local_network
 networks:
   local_network:
     driver: bridge
+volumes:
+  xml_volume:

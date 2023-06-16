@@ -20,6 +20,7 @@ namespace ReservationService.Model
             }
 
             builder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=Reservation;Integrated Security=true;");
+
         }
     }
 }
