@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserService.Core;
 using UserService.Model;
 using UserService.Model.DTO;
@@ -7,6 +8,12 @@ namespace UserService.Services
 {
     public class UserService : IUserService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserService(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
         public User GetUserWithEmail(string email)
         {
             try

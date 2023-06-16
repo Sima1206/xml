@@ -15,10 +15,15 @@ namespace UserService.Controllers
     [Route("api/[controller]")]
     public class UserController : BaseController<User>
     {
+        private readonly IUserService _userService;
+
         public UserController(ProjectConfiguration configuration, IUserService userService) : base(configuration, userService)
         {
+            _userService = userService;
+
         }
 
+      
         [Authorize]
         [HttpGet]
         public IActionResult GetCurrent()

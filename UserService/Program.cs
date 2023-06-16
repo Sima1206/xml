@@ -20,6 +20,12 @@ builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseSqlServer("Data Source=DESKTOP-HE4F5VO;Initial Catalog=User;Integrated Security=true;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+//DODATO MOJE
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
+
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
