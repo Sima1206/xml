@@ -74,20 +74,20 @@ namespace ReservationService.Services
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            if (!CanItBeCancled(reservation))
+            if (!CantBeCancled(reservation))
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
+                //increase cancel count u userProjectu
                 return true;
             }
 
             return false;
-            //servis za usere nek poveca count otkazivanja
         }
 
-        private static bool CanItBeCancled(Reservation reservation)
+        private static bool CantBeCancled(Reservation reservation)
         {
-            var dif = DateTime.Now - reservation.StartDate.Date;
+            var dif = reservation.StartDate.Date -  DateTime.Now ;
             return dif.TotalDays < 1;
         }
 
