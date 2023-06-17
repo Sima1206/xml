@@ -1,4 +1,5 @@
-﻿using ReservationService.Core;
+﻿using ReservationService.Configuration;
+using ReservationService.Core;
 using ReservationService.Model;
 using ReservationService.Model.DTO;
 
@@ -6,6 +7,16 @@ namespace ReservationService.Services
 {
     public class AccommodationService : IAccommodationService
     {
+        
+        private readonly IReservationService _reservationService;
+        private readonly ProjectConfiguration _projectConfiguration;
+        
+        public AccommodationService(){}
+        public AccommodationService(ProjectConfiguration projectConfiguration, IReservationService reservationService)
+        {
+            _projectConfiguration = projectConfiguration;
+            _reservationService = reservationService;
+        }
         public Accommodation CreateAccommodation(AccommodationDTO dto)
         {
             try
@@ -24,7 +35,7 @@ namespace ReservationService.Services
                 accommodation.MaxGuests = dto.MaxGuests;
                 accommodation.Price = dto.Price;
                 accommodation.AutoAcceptReservations = dto.AutoAcceptReservations;
-
+                accommodation.PriceForOneGuest = dto.PriceForOneGuest;
                 unitOfWork.Accommodations.Add(accommodation);
                 unitOfWork.Complete();
 
@@ -103,6 +114,23 @@ namespace ReservationService.Services
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             return unitOfWork.Accommodations.Get(id);
+        }
+        public IEnumerable<Accommodation> Search(int guestNum, long location, DateTime startDate, DateTime endDate)
+        {
+            using UnitOfWork unitOfWork = new UnitOfWork(new ApplicationContext());
+
+            List<Accommodation> found = new List<Accommodation>();
+            IEnumerable<Accommodation> accommodations = unitOfWork.Accommodations.Search(guestNum, location);
+
+            foreach (Accommodation acc in accommodations)
+            {
+                if (_reservationService.CheckIfAccommodationCanBeReserved(acc.Id, startDate, endDate))
+                {
+                    found.Add(acc);
+                }
+            }
+
+            return found;
         }
     }
 }

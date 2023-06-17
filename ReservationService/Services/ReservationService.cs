@@ -22,7 +22,7 @@ namespace ReservationService.Services
                     reservation.GuestId = dto.GuestId;
                     reservation.NumGuests = dto.NumGuests;
                     reservation.Accepted = unitOfWork.Accommodations.Get(dto.AccommodationId).AutoAcceptReservations;
-                    reservation.TotalPrice = dto.TotalPrice;
+                    reservation.TotalPrice = TotalPrice(dto.AccommodationId,dto.StartDate ,  dto.EndDate, dto.NumGuests);
                 }
 
                 unitOfWork.Reservations.Add(reservation);
@@ -35,15 +35,15 @@ namespace ReservationService.Services
             }
         }
 
-        public double TotalPrice(Reservation reservation)
+        public double TotalPrice(long accommodationId, DateTime startDate, DateTime endDate, int numGuests)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            var accommodation = unitOfWork.Accommodations.Get(reservation.AccommodationId);
+            var accommodation = unitOfWork.Accommodations.Get(accommodationId);
             if (accommodation.PriceForOneGuest)
-            {
-                return accommodation.Price * (reservation.EndDate - reservation.StartDate).TotalDays * reservation.NumGuests;
+            { 
+                return accommodation.Price * (endDate - startDate).TotalDays * numGuests;
             }
-            return  accommodation.Price * (reservation.EndDate - reservation.StartDate).TotalDays;
+            return  accommodation.Price * (endDate - startDate).TotalDays;
         }
 
         private void DeleteReservationsWithMatchingPeriod(Reservation reservation)
@@ -74,20 +74,20 @@ namespace ReservationService.Services
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            if (!CanItBeCancled(reservation))
+            if (!CantBeCancled(reservation))
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
+                //increase cancel count u userProjectu
                 return true;
             }
 
             return false;
-            //servis za usere nek poveca count otkazivanja
         }
 
-        private static bool CanItBeCancled(Reservation reservation)
+        private static bool CantBeCancled(Reservation reservation)
         {
-            var dif = DateTime.Now - reservation.StartDate.Date;
+            var dif = reservation.StartDate.Date -  DateTime.Now ;
             return dif.TotalDays < 1;
         }
 
@@ -194,12 +194,49 @@ namespace ReservationService.Services
             {
                 var dateTime = reservation.StartDate;
                 var daysInBetween = (reservation.EndDate - reservation.StartDate).Days;
+
                 for(var i =0; i <= daysInBetween; i++)
+
                 {
                     nonAvailableDates.Add(dateTime.AddDays(i));
                 }
             }
             return nonAvailableDates;
+        }
+        public bool CheckIfAccommodationCanBeReserved(long accommodationID, DateTime startDate, DateTime endDate)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            DateTime today = DateTime.Today;
+
+            IEnumerable<Reservation> reservations =
+                unitOfWork.Reservations.GetAllReservationsForAccommodation(accommodationID, today);
+
+            foreach (Reservation res in reservations)
+            {
+                if (startDate <= res.StartDate && endDate >= res.StartDate)
+                {
+                    return false;
+                }
+                if (startDate >= res.StartDate && startDate <= res.EndDate)
+                {
+                    return false;
+                }
+                
+                if (startDate <= res.StartDate && endDate >= res.EndDate)
+                {
+                    return false;
+                }
+                if (startDate >= res.StartDate && endDate <= res.EndDate)
+                {
+                    return false;
+                }
+
+
+            }
+
+            return true;
+
         }
     }
 }

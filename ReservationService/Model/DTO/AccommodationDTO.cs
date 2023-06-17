@@ -13,7 +13,6 @@
         public int MaxGuests { get; set; }
         public double Price { get; set; }
         public bool AutoAcceptReservations  { get; set; }
-
-
+        public bool PriceForOneGuest { get; set; }
     }
 }

@@ -15,6 +15,11 @@ namespace ReservationService.Repository
         {
             return ApplicationContext.Reservations.Where(x => startData > x.StartDate && endDate < x.EndDate).ToList();
         }
+        
+        public IEnumerable<Reservation> GetAllReservationsForAccommodation(long accommodationID, DateTime today)
+        {
+            return ApplicationContext.Reservations.Where(x => accommodationID == x.AccommodationId && today < x.StartDate).ToList();
+        }
      
     }
 }

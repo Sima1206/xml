@@ -12,10 +12,9 @@ namespace ReservationService.Controllers
     {
         private readonly IReservationService _reservationService;
         private readonly ProjectConfiguration _configuration;
-
+        
         public ReservationController(ProjectConfiguration configuration, IReservationService reservationService)
         {
-
             _configuration = configuration;
             _reservationService = reservationService;
         }
@@ -24,10 +23,13 @@ namespace ReservationService.Controllers
         [HttpPost]
         public IActionResult CreateReservation(ReservationDTO? dto)
         {
+            
             if (dto == null)
             {
                 return BadRequest();
             }
+            if (dto.StartDate > dto.EndDate)
+                return BadRequest();
             var newReservation = _reservationService.CreateReservation(dto);
             return Ok(newReservation);
         }
@@ -107,11 +109,11 @@ namespace ReservationService.Controllers
 
             return Ok(dates);
         }
-        
-        [HttpGet("totalPrice")]
-        public IActionResult TotalPrice(Reservation dto)
+
+        [HttpGet("totalPrice/{id}/{startDate}/{endDate}/{numGuests}")]
+        public IActionResult TotalPrice(long id, DateTime startDate, DateTime endDate, int numGuests)
         {
-            var price = _reservationService.TotalPrice(dto);
+            var price = _reservationService.TotalPrice(id,startDate, endDate, numGuests);
             return Ok(price);
         }
     }

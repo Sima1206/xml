@@ -116,6 +116,12 @@ namespace UserService.Services
             // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
             return false;
         }
+
+        public void IncreaseCancelCount(long id)
+        {
+            GetUserByID(id).cancelCount++;
+        }
+
         public User GetUserByID(long id)
         {
             try
