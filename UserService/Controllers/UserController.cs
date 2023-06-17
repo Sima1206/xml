@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
@@ -11,10 +15,15 @@ namespace UserService.Controllers
     [Route("api/[controller]")]
     public class UserController : BaseController<User>
     {
+        private readonly IUserService _userService;
+
         public UserController(ProjectConfiguration configuration, IUserService userService) : base(configuration, userService)
         {
+            _userService = userService;
+
         }
 
+      
         [Authorize]
         [HttpGet]
         public IActionResult GetCurrent()
@@ -105,8 +114,10 @@ namespace UserService.Controllers
 
             User updatedUser = _userService.Updatee(dto);
 
-            return Ok(updatedUser);
+            return Ok();
         }
+
+
     }
 }
     

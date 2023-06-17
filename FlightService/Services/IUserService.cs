@@ -10,5 +10,6 @@ namespace FlightService.Services
     {
         User GetUserWithEmail(string email);
         User Registration(string email, string password, string name, string surname, string sSN, string phoneNumber);
+        User Login(string email, string password);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserService.Core;
 using UserService.Model;
 using UserService.Model.DTO;
@@ -7,6 +8,12 @@ namespace UserService.Services
 {
     public class UserService : IUserService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserService(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
         public User GetUserWithEmail(string email)
         {
             try
@@ -47,6 +54,20 @@ namespace UserService.Services
             }
         }
 
+        public User Login(string email, string password)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+
+            foreach (User user in unitOfWork.Users.GetAll())
+            {
+                if (user.Email == email && BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    return user;
+                }
+                
+            }
+            return null;
+        } 
         public User UpdateProfile(User dto)
         {
             try
@@ -61,6 +82,11 @@ namespace UserService.Services
             {
                 return null;
             }
+        }
+
+        public void IncreaseCancelCount(long userId)
+        {
+            GetUserByID(userId).cancelCount++;
         }
 
         public bool DeleteGuestAccount(long guestId)

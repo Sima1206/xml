@@ -53,6 +53,21 @@ namespace FlightService.Services
             }
         }
 
+        public User Login(string email, string password)
+        {
+            using UnitOfWork unitOfWork = new UnitOfWork(_configuration);
+
+            foreach (User user in unitOfWork.Users.GetAll())
+            {
+                if (user.Email == email && BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    return user;
+                }
+                
+            }
+            return null;
+        } 
+
         public User GetUserWithEmail(string email)
         {
             try

@@ -64,31 +64,31 @@ namespace ReservationService.Services
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var reservation = unitOfWork.Reservations.Get(id);
-            if (reservation.Deleted == false && reservation.Accepted == false)
-            {
-                reservation.Deleted = true;
-                UpdateReservation(reservation);
-            }
+            if (reservation.Deleted || reservation.Accepted) return;
+            reservation.Deleted = true;
+            UpdateReservation(reservation);
         }
 
         public bool CancelReservationByGuest(Reservation reservation)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
-            if (!CanItBeCancled(reservation))
+            if (!CantBeDeleted(reservation))
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
                 return true;
+                //IncreaseCancelCount
             }
 
             return false;
+            
             //servis za usere nek poveca count otkazivanja
         }
 
-        private static bool CanItBeCancled(Reservation reservation)
+        private static bool CantBeDeleted(Reservation reservation)
         {
-            var dif = DateTime.Now - reservation.StartDate.Date;
-            return dif.TotalDays < 1;
+            var dif =  reservation.StartDate.Date - DateTime.Now ;
+            return dif.TotalDays <= 1;
         }
 
         private static bool MatchedAccommodation(Reservation matchingReservation, Reservation reservation)
@@ -150,8 +150,7 @@ namespace ReservationService.Services
         }
         private static bool MatchedPeriods(Reservation match, Reservation reservation)
         {
-            //poklapaju se ili spada unutar ; poklapaju se ili preklapa ceo period ; pocinje ranije ali se preklapa
-            if (match.StartDate >= reservation.StartDate &&
+           if (match.StartDate >= reservation.StartDate &&
                 match.EndDate <= reservation.EndDate ||
                 reservation.StartDate >= match.StartDate &&
                 reservation.EndDate <= match.EndDate ||
@@ -160,10 +159,8 @@ namespace ReservationService.Services
             {
                 return true;
             }
-
-            //pocinje kasnije ali se preklapa
-            return match.StartDate >= reservation.StartDate &&
-                   reservation.StartDate <= match.EndDate;
+           return match.StartDate >= reservation.StartDate &&
+                  reservation.StartDate <= match.EndDate;
         }
 
         public object? GetByGuestId(long id)
@@ -203,16 +200,15 @@ namespace ReservationService.Services
             }
             return nonAvailableDates;
         }
-        public bool CheckIfAccommodationCanBeReserved(long accommodationID, DateTime startDate, DateTime endDate)
+        public bool CheckIfAccommodationCanBeReserved(long accommodationId, DateTime startDate, DateTime endDate)
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
 
-            DateTime today = DateTime.Today;
+            var today = DateTime.Today;
+            var reservations =
+                unitOfWork.Reservations.GetAllReservationsForAccommodation(accommodationId, today);
 
-            IEnumerable<Reservation> reservations =
-                unitOfWork.Reservations.GetAllReservationsForAccommodation(accommodationID, today);
-
-            foreach (Reservation res in reservations)
+            foreach (var res in reservations)
             {
                 if (startDate <= res.StartDate && endDate >= res.StartDate)
                 {
