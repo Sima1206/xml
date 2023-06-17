@@ -105,6 +105,10 @@
     
     
     
+
+   
+  
+
     {
       "DownstreamPathTemplate": "/api/accommodation/all",
       "DownstreamScheme": "http",
@@ -118,6 +122,7 @@
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
     
+
     {
       "DownstreamPathTemplate": "/api/reservation/createReservation",
       "DownstreamScheme": "http",

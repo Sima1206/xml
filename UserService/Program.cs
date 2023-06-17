@@ -1,8 +1,8 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
-using UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,10 @@ builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+
+
+
+
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     {
         builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().Build();
