@@ -1,4 +1,6 @@
-﻿namespace XML.Core
+﻿using XML.Model;
+
+namespace XML.Core
 {
     public interface ICityService 
     {
