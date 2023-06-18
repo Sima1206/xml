@@ -11,12 +11,13 @@ namespace UserService
 {
     public class Startup
     {
-        public Startup(IProjectConfiguration configuration)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IProjectConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -34,9 +35,15 @@ namespace UserService
             });
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, Services.UserService>();
-            
-           // var config = new ProjectConfiguration();
-           // services.AddSingleton(config);
+            var config = new ProjectConfiguration();
+            Configuration.Bind("ProjectConfiguration", config);      //  <--- This
+            services.AddSingleton(config);
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         
         }
 
@@ -49,6 +56,7 @@ namespace UserService
                 app.UseDeveloperExceptionPage();
             }
 
+            
             app.UseCors(builder => builder
         .   AllowAnyOrigin()
             .AllowAnyMethod()
@@ -62,7 +70,12 @@ namespace UserService
                 app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
             });
 
+            app.UseCors("MyPolicy");
+
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+
             using (var sScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var cx = sScope.ServiceProvider.GetService<ApplicationContext>();
