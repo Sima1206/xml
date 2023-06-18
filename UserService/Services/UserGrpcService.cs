@@ -27,6 +27,7 @@ public class UserGrpcService: UserGrpc.UserGrpcBase
             throw new RpcException(new Status(StatusCode.NotFound, $"User with ID '{request.Id}' not found."));
         }
 
+        ++user.cancelCount;
         var response = new UserResponse()
         {
             Surname = user.Surname,
@@ -37,6 +38,7 @@ public class UserGrpcService: UserGrpc.UserGrpcBase
             CancelCount = (int)user.cancelCount,
             Name = user.Name,
         };
+        _userRepository.Update(user);
         return Task.FromResult(response);
     }
 

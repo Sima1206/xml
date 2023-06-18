@@ -2,7 +2,9 @@
 using ReservationService.Core;
 using ReservationService.Model.DTO;
 using ReservationService.Model;
-
+using Grpc.Net.Client;
+using ReservationService.Core;
+using Proto2;
 namespace ReservationService.Services
 {
     public class ReservationService : IReservationService
@@ -78,7 +80,10 @@ namespace ReservationService.Services
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
-                new UserService().GetUserById(reservation.GuestId).Result.CancelCount++;
+                var channel = GrpcChannel.ForAddress("https://localhost:4112");
+                var client = new UserGrpc.UserGrpcClient(channel);
+                var reply = client.GetUserInfoAsync(new UserRequest{ Id = reservation.GuestId });
+
                 return true;
             }
 

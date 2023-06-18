@@ -67,4 +67,4 @@ app.MapControllers();
 //server za 4111
 //var server = new Server { Services = { AccommodationGrpc.BindService(new AccommodationGrpcService()) }, Ports = { new ServerPort("localhost", 4111, ServerCredentials.Insecure) } };
 //server.Start();
-//app.Run();
+app.Run();
