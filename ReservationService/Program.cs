@@ -1,8 +1,14 @@
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
+using ReservationService;
 using ReservationService.Configuration;
 using ReservationService.Core;
 using ReservationService.Model;
+using ReservationService.Repository;
 using ReservationService.Services;
+using Proto2;
+//using Proto1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,17 +24,26 @@ builder.Services.AddDbContext<ApplicationContext>(optionBuilder => {
     optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-ProjectConfiguration projectConfiguration = new ProjectConfiguration();
-builder.Services.AddSingleton(projectConfiguration);
+//klijent za 4112
+var channel = new Channel("localhost", 4112, ChannelCredentials.Insecure);
+var client = new UserGrpc.UserGrpcClient(channel);
+builder.Services.AddSingleton(client);
+builder.Services.AddGrpc();
 
 builder.Services.AddScoped<IAccommodationService, AccommodationService>();
 builder.Services.AddScoped<IReservationService, ReservationService.Services.ReservationService>();
+builder.Services.AddScoped<IUserService, ReservationService.Services.UserService>();
+
+var projectConfiguration = new ProjectConfiguration();
+builder.Services.AddSingleton(projectConfiguration);
 
 var app = builder.Build();
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader());
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -45,5 +60,11 @@ using (var scope = app.Services.CreateScope())
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Run();
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapGrpcService<AccommodationGrpcService>();
+//});
+//server za 4111
+//var server = new Server { Services = { AccommodationGrpc.BindService(new AccommodationGrpcService()) }, Ports = { new ServerPort("localhost", 4111, ServerCredentials.Insecure) } };
+//server.Start();
+//app.Run();

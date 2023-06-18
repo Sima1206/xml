@@ -78,7 +78,7 @@ namespace ReservationService.Services
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
-                //increase cancel count u userProjectu
+                new UserService().GetUserById(reservation.GuestId).Result.CancelCount++;
                 return true;
             }
 

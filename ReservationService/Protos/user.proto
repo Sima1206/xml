@@ -1,0 +1,25 @@
+syntax="proto3";
+package Proto2;
+//klijent
+service UserGrpc{
+  rpc GetUserInfo(UserRequest) returns (UserResponse);
+}
+message UserRequest{
+  int64 id= 1; //zahtev salje id, pretrazujemo tako
+}
+message UserResponse{
+  string name = 1;
+  string surname = 2;
+  string email = 3;
+  string password = 4;
+  int64 city_id = 5;
+  bool enabled = 6;
+  UserType user_type = 7;
+  int32 cancel_count = 8;
+  bool deleted= 9;
+}
+
+enum UserType {
+  HOST = 0;
+  GUEST = 1;
+}

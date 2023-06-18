@@ -26,7 +26,7 @@ namespace UserService.Services
             {
                 using UnitOfWork unitOfWork = new(new ApplicationContext());
 
-                User user = new User();
+                var user = new User();
 
                 user.Name = dto.Name;
                 user.Surname = dto.Surname;
@@ -67,7 +67,7 @@ namespace UserService.Services
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var user = unitOfWork.Users.Get(guestId);
-            if (user == null || user.Deleted || user.userType != UserType.Guest)
+            if (user == null || user.Deleted || user.userType != (Model.UserType)UserType.Guest)
             {
                 return false;
             }
@@ -85,7 +85,7 @@ namespace UserService.Services
         {
             using UnitOfWork unitOfWork = new(new ApplicationContext());
             var user = unitOfWork.Users.Get(hostId);
-            if (user == null || user.Deleted || user.userType != UserType.Host)
+            if (user == null || user.Deleted || user.userType != (Model.UserType)UserType.Host)
             {
                 return false;
             }
