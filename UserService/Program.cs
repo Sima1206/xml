@@ -1,8 +1,12 @@
-using System.Text;
+
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using UserService.Configuration;
 using UserService.Core;
 using UserService.Model;
+using UserService.Services;
+//using Proto1;
+using Proto2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +31,17 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
     }
 ));
 
-ProjectConfiguration projectConfiguration = new ProjectConfiguration();
+//klijent za 4111
+//var channel = new Channel("localhost", 4111, ChannelCredentials.Insecure);
+//var client = new AccommodationGrpc.AccommodationGrpcClient(channel);
+//builder.Services.AddSingleton(client);
+builder.Services.AddGrpc();
+builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
+//builder.Services.AddScoped<UserService.Core.IAccommodationService, AccommodationService>();
+var projectConfiguration = new ProjectConfiguration();
 builder.Services.AddSingleton(projectConfiguration);
 
-builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
+
 
 var app = builder.Build();
 app.UseCors(x => x
@@ -55,5 +66,14 @@ app.UseAuthorization();
 app.UseCors("MyPolicy");
 
 app.MapControllers();
+
+
+//server za 4112
+var server = new Server
+{
+    Services = { UserGrpc.BindService(new UserGrpcService()) },
+    Ports = { new ServerPort("localhost", 4112, ServerCredentials.Insecure) }
+};
+server.Start();
 
 app.Run();

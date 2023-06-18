@@ -20,7 +20,7 @@ namespace ReservationService.Model
             }
 
             builder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
-         
         }
     }
-}
+    }
+
