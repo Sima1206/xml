@@ -24,20 +24,26 @@ namespace UserService
         {
             services.AddControllers();
             //dodato
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
             services.AddCors();
 
             services.AddGrpc();
 
 
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
-            services.AddScoped<IUserRepository, UserRepository>();
+          //  services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, Services.UserService>();
             var config = new ProjectConfiguration();
             Configuration.Bind("ProjectConfiguration", config);      //  <--- This
             services.AddSingleton(config);
+            
+            
+            
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
@@ -69,7 +75,17 @@ namespace UserService
                 // Shutdown gRPC channel
                 app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
             });
-
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = string.Empty;
+            });
             app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
