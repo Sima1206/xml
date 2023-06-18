@@ -82,8 +82,8 @@ namespace ReservationService.Services
                 UpdateReservation(reservation);
                 var channel = GrpcChannel.ForAddress("https://localhost:4112");
                 var client = new UserGrpc.UserGrpcClient(channel);
-                var reply = client.GetUserInfoAsync(new UserRequest{ Id = reservation.GuestId });
-
+                var reply = client.GetUserInfo(new UserRequest{ Id = reservation.GuestId });
+                new UserService().GetUserById(reservation.GuestId);
                 return true;
             }
 

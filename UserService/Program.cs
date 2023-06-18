@@ -65,7 +65,12 @@ app.UseAuthorization();
 
 app.UseCors("MyPolicy");
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapGrpcService<UserGrpcService>();
+
+});
 
 
 //server za 4112
