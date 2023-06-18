@@ -35,7 +35,9 @@ public class Startup
             var client = new UserGrpc.UserGrpcClient(channel);
             services.AddSingleton(client);
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
+                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
+             //   optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
+                
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
           //  services.AddScoped<IUserRepository, UserRepository>();
@@ -96,6 +98,11 @@ public class Startup
 
             app.UseHttpsRedirection();
 
+            applicationLifetime.ApplicationStopping.Register(() =>
+            {
+                // Shutdown gRPC channel
+                app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
+            });
             app.UseRouting();
 
             using (var sScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -108,16 +115,11 @@ public class Startup
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-          //      endpoints.MapGrpcService<AccommodationGrpcService>();
-
+                endpoints.MapGrpcService<AccommodationGrpcService>();
+                endpoints.MapGet("protos/accommodation.proto", async context =>
+                {
+                    await context.Response.WriteAsync(File.ReadAllText("Protos/accommodation.proto"));
+                });
             });
-
-        /*    server = new Server
-            {
-                Services = { UserGrpc.BindService(new AccommodationGrpcService()) },
-                Ports = { new ServerPort("localhost", 4112, ServerCredentials.Insecure) }
-            };
-            server.Start();
-*/
         }
     }

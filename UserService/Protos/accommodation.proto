@@ -1,0 +1,21 @@
+//accomodationService.DeleteAccommodationsByHostId(hostId);
+syntax="proto3";
+package Proto1;
+//klijent
+service AccommodationGrpc{
+  rpc DeleteAccommodationsByHostId(AccommodationRequest) returns (AccommodationResponse);
+}
+message AccommodationRequestDto{
+  int64 id= 1;
+}
+message AccommodationRequest{
+  AccommodationRequestDto request= 1;
+}
+message AccommodationResponseDto{
+  string name = 1;
+  int64 host_id = 2;
+  bool deleted = 3;
+}
+message AccommodationResponse{
+  AccommodationResponseDto response= 1;
+}

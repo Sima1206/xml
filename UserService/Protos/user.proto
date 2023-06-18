@@ -1,13 +1,17 @@
 syntax="proto3";
 package Proto2;
-//server
+//klijent
 service UserGrpc{
   rpc GetUserInfo(UserRequest) returns (UserResponse);
 }
-message UserRequest{
-  int64 id= 1; //zahtev salje id, pretrazujemo tako
+message UserRequestDto{
+  int64 id= 1;
+  int32 cancel_count = 2;
 }
-message UserResponse{
+message UserRequest{
+  UserRequestDto request= 1;
+}
+message UserResponseDto{
   string name = 1;
   string surname = 2;
   string email = 3;
@@ -17,6 +21,9 @@ message UserResponse{
   UserType user_type = 7;
   int32 cancel_count = 8;
   bool deleted= 9;
+}
+message UserResponse{
+  UserResponseDto response= 1;
 }
 
 enum UserType {

@@ -33,18 +33,19 @@ namespace UserService
 
 
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
+                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=User;Integrated Security=true;");
+                //   optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!");
+
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
-          //  services.AddScoped<IUserRepository, UserRepository>();
+            
             services.AddScoped<IUserService, Services.UserService>();
+            services.AddScoped<IAccommodationService, AccommodationService>();
+
             var config = new ProjectConfiguration();
             Configuration.Bind("ProjectConfiguration", config);      //  <--- This
             services.AddSingleton(config);
-            
-            
-            
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+         services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -52,8 +53,6 @@ namespace UserService
             }));
         
         }
-
-        private Server server;
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IHostApplicationLifetime applicationLifetime)
         {
@@ -103,16 +102,11 @@ namespace UserService
             {
                 endpoints.MapControllers();
                 endpoints.MapGrpcService<UserGrpcService>();
-
+                endpoints.MapGet("protos/user.proto", async context =>
+                {
+                    await context.Response.WriteAsync(File.ReadAllText("Protos/user.proto"));
+                });
             });
-
-            server = new Server
-            {
-                Services = { UserGrpc.BindService(new UserGrpcService()) },
-                Ports = { new ServerPort("localhost", 4112, ServerCredentials.Insecure) }
-            };
-            server.Start();
-         //  Console.WriteLine();
 
         }
     }

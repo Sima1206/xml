@@ -12,5 +12,6 @@ namespace ReservationService.Core
         
         IEnumerable<Accommodation> Search(int guestNum, long location, DateTime startDate, DateTime endDate);
 
+        bool DeleteAccommodationsByHostId(long requestId);
     }
 }

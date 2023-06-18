@@ -93,7 +93,7 @@ namespace UserService.Services
             {
                 return false;
             }
-            //accomodationService.DeleteAccommodationsByHostId(hostId);
+            new AccommodationService().DeleteAccommodationsByHostId(hostId);
             user.Deleted = true;
             UpdateProfile(user);
             unitOfWork.Complete();
@@ -115,11 +115,6 @@ namespace UserService.Services
             // var today = DateTime.Today;
             // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
             return false;
-        }
-
-        public void IncreaseCancelCount(long id)
-        {
-            GetUserByID(id).cancelCount++;
         }
 
         public User GetUserByID(long id)

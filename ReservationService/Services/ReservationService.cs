@@ -81,13 +81,7 @@ namespace ReservationService.Services
             {
                 reservation.Deleted = true;
                 UpdateReservation(reservation);
-                
-                var channel = GrpcChannel.ForAddress("https://localhost:4112");
-                var client = new UserGrpc.UserGrpcClient(channel);
-                
-              //  var reply = client.GetUserInfo(new UserRequest{ Id = reservation.GuestId });
-            //    if (reply == null) throw new RpcException(new Status(StatusCode.NotFound, $"Error null reply"));
-                new UserService().GetUserById(reservation.GuestId);
+                 new UserService().GetUserById(reservation.GuestId);
                 return true;
             }
 
