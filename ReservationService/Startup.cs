@@ -31,9 +31,11 @@ public class Startup
 
             services.AddGrpc();
 
-
+            var channel = new Channel("localhost", 4112, ChannelCredentials.Insecure);
+            var client = new UserGrpc.UserGrpcClient(channel);
+            services.AddSingleton(client);
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
+                optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
           //  services.AddScoped<IUserRepository, UserRepository>();

@@ -33,7 +33,7 @@ namespace UserService
 
 
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
+                optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!;");
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
           //  services.AddScoped<IUserRepository, UserRepository>();
@@ -112,6 +112,7 @@ namespace UserService
                 Ports = { new ServerPort("localhost", 4112, ServerCredentials.Insecure) }
             };
             server.Start();
+         //  Console.WriteLine();
 
         }
     }
