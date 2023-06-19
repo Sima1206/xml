@@ -101,6 +101,20 @@
       "UpstreamPathTemplate": "/accommodations/accommodation{id}",
       "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
     },
+
+
+    {
+      "DownstreamPathTemplate": "/api/accommodation/host{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservationservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/accommodations/host{id}",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    },
     
     
     

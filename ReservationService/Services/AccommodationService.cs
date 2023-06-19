@@ -1,4 +1,5 @@
-﻿using ReservationService.Configuration;
+﻿using Proto1;
+using ReservationService.Configuration;
 using ReservationService.Core;
 using ReservationService.Model;
 using ReservationService.Model.DTO;
@@ -131,6 +132,12 @@ namespace ReservationService.Services
             }
 
             return found;
+        }
+
+        public object? GetByHostId(long id)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Accommodations.GetAll().Where(acc => acc.HostId==id);
         }
     }
 }

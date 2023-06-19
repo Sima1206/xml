@@ -85,7 +85,14 @@ namespace ReservationService.Controllers
             return Ok(reservations);
         }
 
-
+        [Route("host{id}")]
+        [HttpGet]
+        public IActionResult GetByHostId(long id)
+        {
+            var accommodationService = new AccommodationService();
+            var reservations = accommodationService.GetByHostId(id);
+            return Ok(reservations);
+        }
 
         [HttpGet("accommodation{id}")]
         public IActionResult GetById(long id)
