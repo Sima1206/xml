@@ -20,5 +20,8 @@ namespace ReservationService.Core
         
         bool CheckIfAccommodationCanBeReserved(long accommodationID, DateTime startDate, DateTime endDate);
 
+        bool HostHasActiveReservations(long hostId);
+        bool GuestHasReservations(long hostId);
+
     }
 }

@@ -1,0 +1,21 @@
+syntax="proto3";
+package Proto3;
+service ReservationGrpc{
+  rpc GuestHasReservations(ReservationRequest) returns (ReservationResponse);
+  rpc HostHasActiveReservations(ReservationRequest) returns (ReservationResponse);
+}
+message ReservationRequestDto{
+  int64 id= 1;
+}
+message ReservationRequest{
+  ReservationRequestDto request= 1;
+}
+message ReservationResponseDto{
+  string name = 1;
+  int64 host_id = 2;
+  int64 guest_id = 4;
+  bool has_reservations = 3;
+}
+message ReservationResponse{
+  ReservationResponseDto response= 1;
+}

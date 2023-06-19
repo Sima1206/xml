@@ -42,4 +42,5 @@
   </ItemGroup>
   <ItemGroup><Protobuf Include="Protos\user.proto" GrpcServices="Client" /></ItemGroup>
   <ItemGroup>   <Protobuf Include="Protos\accommodation.proto" GrpcServices="Server" /></ItemGroup>
+  <ItemGroup>   <Protobuf Include="Protos\reservation.proto" GrpcServices="Server" /></ItemGroup>
 </Project>

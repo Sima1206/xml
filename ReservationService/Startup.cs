@@ -63,19 +63,20 @@ public class Startup
 
         private Server server;
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            IHostApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            
+
             app.UseCors(builder => builder
-        .   AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-            
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             applicationLifetime.ApplicationStopping.Register(() =>
@@ -89,6 +90,7 @@ public class Startup
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
@@ -110,16 +112,19 @@ public class Startup
                 var cx = sScope.ServiceProvider.GetService<ApplicationContext>();
                 cx?.Database.Migrate();
             }
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapGrpcService<AccommodationGrpcService>();
-                endpoints.MapGet("protos/accommodation.proto", async context =>
-                {
-                    await context.Response.WriteAsync(File.ReadAllText("Protos/accommodation.proto"));
+                endpoints.MapGrpcService<ReservationGrpcService>();
+                /*    endpoints.MapGet("protos/accommodation.proto", async context =>
+                    {
+                        await context.Response.WriteAsync(File.ReadAllText("Protos/accommodation.proto"));
+                    });*/
                 });
-            });
-        }
+            }
+        
     }

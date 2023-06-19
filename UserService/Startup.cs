@@ -41,6 +41,7 @@ namespace UserService
             
             services.AddScoped<IUserService, Services.UserService>();
             services.AddScoped<IAccommodationService, AccommodationService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             var config = new ProjectConfiguration();
             Configuration.Bind("ProjectConfiguration", config);      //  <--- This
@@ -71,9 +72,9 @@ namespace UserService
 
             applicationLifetime.ApplicationStopping.Register(() =>
             {
-                // Shutdown gRPC channel
                 app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
             });
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

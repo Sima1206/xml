@@ -241,5 +241,33 @@ namespace ReservationService.Services
             return true;
 
         }
+        
+        public bool GuestHasReservations(long guestId)
+        { 
+            using UnitOfWork unitOfWork = new(new ApplicationContext());
+            return unitOfWork.Reservations.GetAll().Where(reservation => reservation.GuestId == guestId).ToList().Any();
+        }
+        
+        public bool HostHasActiveReservations(long hostId)
+        {
+            using UnitOfWork unitOfWork = new(new ApplicationContext()); 
+            var acceptedReservations = unitOfWork.Reservations.GetAll().Where(reservation => reservation.Accepted).ToList();
+            var hostAccommodations = unitOfWork.Accommodations.GetAll().Where(accommodation => accommodation.HostId==hostId).ToList();
+            var acceptedReservationsForHost = GetReservationsForAccommodations(hostAccommodations, acceptedReservations);
+            var today = DateTime.Today;
+           return acceptedReservationsForHost.Any(r => r.StartDate >= today);
+        }
+
+        private IEnumerable<Reservation> GetReservationsForAccommodations(List<Accommodation> accommodations, List<Reservation> reservations)
+        {
+            var matchingReservations = new List<Reservation>();
+            foreach (var accommodation in accommodations)
+            {
+                var reservationsForAccommodation = reservations.Where(r => r.AccommodationId == accommodation.Id).ToList();
+                matchingReservations.AddRange(reservationsForAccommodation);
+            }
+    
+            return matchingReservations;
+        }
     }
 }

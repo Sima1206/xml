@@ -71,7 +71,7 @@ namespace UserService.Services
             {
                 return false;
             }
-            if (GuestHasReservations(guestId))
+            if (GuestHasReservations(guestId).Result)
             {
                 return false;
             }
@@ -89,7 +89,7 @@ namespace UserService.Services
             {
                 return false;
             }
-            if (HostHasActiveReservations(hostId))
+            if (HostHasActiveReservations(hostId).Result)
             {
                 return false;
             }
@@ -98,23 +98,15 @@ namespace UserService.Services
             UpdateProfile(user);
             unitOfWork.Complete();
             return true;
-            
-
-            return true;
         }
 
-        private bool GuestHasReservations(long guestId)
+        private async Task<bool> GuestHasReservations(long guestId)
         {
-            // var reservations = _reservationService.GetByGuestId(guestId);
-            //return reservations.Any();
-            return false;
+            return await new ReservationService().GuestHasReservations(guestId);
         }
-        private bool HostHasActiveReservations(long hostId)
-        {
-            // var reservations = _reservationService.GetByHostId(hostId).Where(reservation => reservation.Accepted == true);
-            // var today = DateTime.Today;
-            // return reservations.Any(r => r.StartDate <= today && r.EndDate >= today);
-            return false;
+        private async Task<bool> HostHasActiveReservations(long hostId)
+        { 
+            return await new ReservationService().HostHasActiveReservations(hostId);
         }
 
         public User GetUserByID(long id)
