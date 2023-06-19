@@ -33,8 +33,8 @@ namespace UserService
 
 
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=User;Integrated Security=true;");
-                //   optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!");
+              //  optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=User;Integrated Security=true;");
+                   optionBuilder.UseSqlServer("Server=mssql;Database=User;User Id=sa;Password=Your_password123!");
 
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });

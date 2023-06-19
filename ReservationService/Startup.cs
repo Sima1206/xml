@@ -35,13 +35,12 @@ public class Startup
             var client = new UserGrpc.UserGrpcClient(channel);
             services.AddSingleton(client);
             services.AddDbContext<ApplicationContext>(optionBuilder => {
-                optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
-             //   optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
+              //  optionBuilder.UseSqlServer("Data Source=DESKTOP-7H680CJ;Initial Catalog=Reservation;Integrated Security=true;");
+               optionBuilder.UseSqlServer("Server=mssql;Database=Reservation;User Id=sa;Password=Your_password123!");
                 
                 optionBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
-          //  services.AddScoped<IUserRepository, UserRepository>();
-           
+         
           services.AddScoped<IAccommodationService, AccommodationService>();
           services.AddScoped<IReservationService, ReservationService.Services.ReservationService>();
           services.AddScoped<IUserService, UserService>();
@@ -80,7 +79,7 @@ public class Startup
             app.UseHttpsRedirection();
 
             applicationLifetime.ApplicationStopping.Register(() =>
-            {
+            { 
                 // Shutdown gRPC channel
                 app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
             });
@@ -99,12 +98,6 @@ public class Startup
             app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
-
-            applicationLifetime.ApplicationStopping.Register(() =>
-            {
-                // Shutdown gRPC channel
-                app.ApplicationServices.GetService<Channel>().ShutdownAsync().Wait();
-            });
             app.UseRouting();
 
             using (var sScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -120,11 +113,7 @@ public class Startup
                 endpoints.MapControllers();
                 endpoints.MapGrpcService<AccommodationGrpcService>();
                 endpoints.MapGrpcService<ReservationGrpcService>();
-                /*    endpoints.MapGet("protos/accommodation.proto", async context =>
-                    {
-                        await context.Response.WriteAsync(File.ReadAllText("Protos/accommodation.proto"));
-                    });*/
-                });
+            });
             }
         
     }
